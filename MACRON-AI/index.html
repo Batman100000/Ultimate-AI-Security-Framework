@@ -3,764 +3,1393 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureAssess Pro - Advanced Security Platform</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide-react@0.263.1/dist/esm/lucide-react.js" type="module"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>MACRON-AI</title>
     <style>
-        :root {
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            --backdrop-filter: blur(4px);
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f141b;color:#dee2ec;line-height:1.6;min-height:100vh;padding:20px;background-image:linear-gradient(to right,rgba(207,188,255,0.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(207,188,255,0.05) 1px,transparent 1px);background-size:40px 40px}
+        .container{max-width:1100px;margin:0 auto}
+        .page{display:none}.page.active{display:block;animation:fadeIn 0.3s}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+
+        /* ── BACK / FORWARD NAV ── */
+        .page-nav{display:none}
+        .nav-arrow{display:none}
+        .nav-arrow-sep{display:none}
+        .nav-breadcrumb{display:none}
+        /* ── HEADER ── */
+        header{background:rgba(27,32,39,0.7);backdrop-filter:blur(12px);border:1px solid rgba(207,188,255,0.1);border-radius:0;padding:16px 40px;margin-bottom:24px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:40px;box-shadow:0 0 15px rgba(207,188,255,0.1)}
+        header h1{font-size:1.4rem;margin:0;font-weight:700;color:#cfbcff;letter-spacing:-0.5px;display:flex;align-items:center;gap:10px;flex-shrink:0;text-transform:uppercase;font-size:24px;line-height:32px;letter-spacing:-0.02em;drop-shadow:0 0 8px rgba(207,188,255,0.4)}
+        header .subtitle{display:none}
+        .nav-tabs{display:flex;gap:12px;flex-wrap:nowrap;justify-content:flex-end;padding:0;align-items:center}
+        .nav-tab{padding:10px 16px;border-radius:8px;border:1.5px solid rgba(207,188,255,0.2);background:rgba(30,41,59,0.4);color:#cbd5e1;cursor:pointer;font-size:0.9rem;font-weight:500;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;white-space:nowrap;font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:0.05em}
+        .nav-tab::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(207,188,255,0.2),transparent);transition:left 0.5s}
+        .nav-tab:hover{border-color:#cfbcff;color:#cfbcff;background:rgba(207,188,255,0.1);transform:translateY(-2px);box-shadow:0 0 10px rgba(207,188,255,0.3)}
+        .nav-tab:hover::before{left:100%}
+        .nav-tab.active{background:rgba(207,188,255,0.15);border-color:#cfbcff;color:#cfbcff;box-shadow:0 0 20px rgba(207,188,255,0.3)}
+
+        /* ── 3D SPIDERWEB HOME ── */
+        .home-spiderweb-container{display:flex;align-items:center;justify-content:center;margin:8px 0 25px 0;perspective:1000px;min-height:420px}
+        .spiderweb-3d{position:relative;width:380px;height:380px;display:flex;align-items:center;justify-content:center}
+        .spiderweb-canvas{position:absolute;width:380px;height:380px}
+        .spiderweb-layers{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+        .spiderweb-ring{position:absolute;border-radius:50%;border:1.5px solid rgba(207,188,255,0.4);display:flex;align-items:center;justify-content:center;animation:spin3d 20s linear infinite}
+        @keyframes spin3d{0%{transform:rotateX(45deg) rotateY(0deg)} 100%{transform:rotateX(45deg) rotateY(360deg)}}
+        .spiderweb-ring-1{width:76px;height:76px;border-color:rgba(207,188,255,0.6);box-shadow:0 0 20px rgba(207,188,255,0.4)}
+        .spiderweb-ring-2{width:133px;height:133px;border-color:rgba(207,188,255,0.5)}
+        .spiderweb-ring-3{width:190px;height:190px;border-color:rgba(207,188,255,0.4)}
+        .spiderweb-ring-4{width:247px;height:247px;border-color:rgba(207,188,255,0.3)}
+        .spiderweb-ring-5{width:304px;height:304px;border-color:rgba(207,188,255,0.2)}
+        .spiderweb-center{position:absolute;width:40px;height:40px;background:rgba(207,188,255,0.3);border:2px solid #cfbcff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 30px rgba(207,188,255,0.5),inset 0 0 15px rgba(207,188,255,0.3);z-index:10}
+        .spiderweb-labels{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#cfbcff}
+        .spiderweb-label{position:absolute;padding:8px 16px;border:1px solid rgba(207,188,255,0.3);border-radius:8px;background:rgba(15,23,42,0.9);box-shadow:0 0 10px rgba(207,188,255,0.2);font-size:11px;white-space:nowrap}
+        .layer-data{top:10px;left:50%;transform:translateX(-50%)}
+        .layer-compliance{top:80px;right:20px}
+        .layer-network{bottom:70px;right:30px}
+        .layer-infra{bottom:10px;left:50%;transform:translateX(-50%)}
+        .layer-app{bottom:70px;left:30px}
+        .layer-model{top:80px;left:20px}
+        .spiderweb-info{position:absolute;top:20px;left:20px;font-size:10px;color:#94a3b8;font-family:monospace;letter-spacing:0.08em;line-height:1.4;pointer-events:none}
+        .spiderweb-info-item{color:#cfbcff;margin-bottom:4px}
+        @media(max-width:768px){
+            .spiderweb-3d{width:300px;height:300px}
+            .spiderweb-canvas{width:300px;height:300px}
+            .spiderweb-ring-1{width:60px;height:60px}
+            .spiderweb-ring-2{width:105px;height:105px}
+            .spiderweb-ring-3{width:150px;height:150px}
+            .spiderweb-ring-4{width:195px;height:195px}
+            .spiderweb-ring-5{width:240px;height:240px}
+            .spiderweb-label{font-size:9px;padding:6px 12px}
+            .layer-compliance{right:20px}
+            .layer-network{right:20px}
+            .layer-app{left:20px}
+            .layer-model{left:20px}
+        }
+        /* ── HERO BANNER ── */
+        .hero-banner{background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(5,150,105,0.05));border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:center}
+        .hero-content{display:flex;align-items:center;gap:16px;max-width:600px}
+        .hero-icon{font-size:28px;display:flex;align-items:center;justify-content:center}
+        .hero-text{text-align:left}
+        .hero-text h2{font-size:1.1rem;color:#f1f5f9;margin:0 0 4px 0;font-weight:600}
+        .hero-text p{font-size:0.85rem;color:#94a3b8;margin:0}
+        .process-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-bottom:32px}
+        .step-card{background:rgba(27,32,39,0.7);backdrop-filter:blur(12px);border:1px solid rgba(207,188,255,0.1);border-radius:12px;padding:12px;text-align:center;transition:all 0.2s;box-shadow:0 0 10px rgba(0,0,0,0.3)}
+        .step-card:hover{border-color:rgba(207,188,255,0.3);box-shadow:0 0 20px rgba(207,188,255,0.2)}
+        .step-number{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:linear-gradient(135deg,#cfbcff,#b8a4ff);border-radius:50%;font-size:18px;font-weight:bold;margin-bottom:6px;color:#381e72;box-shadow:0 0 15px rgba(207,188,255,0.4)}
+        .step-card h3{font-size:1.05rem;margin-bottom:6px;color:#f1f5f9}
+        .step-card p{font-size:0.88rem;color:#cbd5e1}
+
+        /* ── VISUALIZER ── */
+        .viz-wrap{background:rgba(27,32,39,0.7);backdrop-filter:blur(12px);border:1px solid rgba(207,188,255,0.1);border-radius:12px;padding:28px;margin-bottom:24px}
+        .viz-wrap h2{font-size:1.2rem;margin-bottom:20px;color:#f1f5f9}
+        .spider-container{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+        .spider-svg-wrap{flex:0 0 320px}
+        .layer-info-panel{flex:1;min-width:240px}
+        .layer-btn{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;margin-bottom:6px;background:rgba(30,41,59,0.6);border:1px solid rgba(71,85,105,0.3);border-radius:8px;cursor:pointer;transition:all 0.2s;text-align:left}
+        .layer-btn:hover,.layer-btn.active{border-color:var(--lc);background:rgba(30,41,59,0.95)}
+        .layer-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+        .layer-btn-name{font-size:0.9rem;color:#e2e8f0;font-weight:500}
+        .layer-detail{background:rgba(30,41,59,0.9);border-radius:8px;padding:12px;display:none}
+        .layer-detail.active{display:block}
+        .layer-detail h3{color:#f1f5f9;margin-bottom:12px;font-size:1rem}
+        .detail-threats,.detail-controls{margin-bottom:10px}
+        .detail-label{font-size:11px;font-weight:700;letter-spacing:0.08em;color:#94a3b8;margin-bottom:6px;text-transform:uppercase}
+        .detail-item{font-size:0.75rem;color:#cbd5e1;padding:4px 0;border-bottom:1px solid rgba(71,85,105,0.2)}
+        .detail-item:last-child{border-bottom:none}
+        .threat-item{color:#cfbcff}.control-item-viz{color:#cfbcff}
+
+        /* ── FORM ── */
+        .form-container{background:rgba(30,41,59,0.8);border:1px solid rgba(71,85,105,0.3);border-radius:12px;padding:36px;margin-bottom:24px}
+        .form-step-header{margin-bottom:24px}
+        .form-step-header h2{font-size:1.2rem;color:#f1f5f9;margin-bottom:4px}
+        .form-step-header p{font-size:0.88rem;color:#94a3b8}
+        .step-progress{display:flex;gap:6px;margin-bottom:24px}
+        .step-dot{height:4px;flex:1;border-radius:2px;background:rgba(71,85,105,0.4);transition:background 0.3s}
+        .step-dot.done{background:#10b981}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;margin-bottom:7px;color:#cbd5e1;font-weight:500;font-size:0.93rem}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px;border:1px solid rgba(71,85,105,0.5);border-radius:8px;background:rgba(15,23,42,0.8);color:#e2e8f0;font-size:0.95rem}
+        .form-group input:focus,.form-group select:focus{outline:none;border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,0.1)}
+        .radio-group{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+        .radio-option{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid rgba(71,85,105,0.4);border-radius:8px;cursor:pointer;transition:all 0.2s}
+        .radio-option:hover{border-color:#10b981;background:rgba(16,185,129,0.05)}
+        .radio-option input{width:auto;cursor:pointer}
+        .radio-option label{cursor:pointer;font-size:0.88rem;color:#e2e8f0;margin:0}
+
+        /* ── BUTTONS ── */
+        .btn-container{display:flex;gap:12px;justify-content:center;margin-top:28px}
+        button{padding:9px 24px;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.25s;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+        .btn-primary{background:#cfbcff;color:#381e72;border:1.5px solid #cfbcff;box-shadow:0 0 15px rgba(207,188,255,0.3)}
+        .btn-primary:hover{opacity:0.9;transform:translateY(-1px);box-shadow:0 0 25px rgba(207,188,255,0.5)}
+        .btn-secondary{background:transparent;color:#cfbcff;border:1.5px solid rgba(207,188,255,0.4)}
+        .btn-secondary:hover{border-color:#cfbcff;background:rgba(207,188,255,0.1);box-shadow:0 0 15px rgba(207,188,255,0.3)}
+
+        /* ── RESULTS ── */
+        .results-container{text-align:center;padding:30px 10px}
+        .risk-score-circle{position:relative;width:300px;height:300px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center}
+        .risk-circle{width:100%;height:100%}
+        .risk-score-text{position:absolute;text-align:center}
+        .risk-score-number{font-size:78px;font-weight:bold;color:#f1f5f9}
+        .risk-score-label{font-size:15px;color:#cbd5e1;margin-top:6px}
+        .reduce-risk-banner{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(5,150,105,0.1));border:1px solid rgba(16,185,129,0.4);border-radius:12px;padding:16px 22px;margin:0 auto 36px;max-width:520px;cursor:pointer;transition:all 0.25s;text-align:left}
+        .reduce-risk-banner:hover{background:linear-gradient(135deg,rgba(16,185,129,0.25),rgba(5,150,105,0.2));border-color:#10b981;transform:translateY(-2px)}
+        .reduce-risk-icon{font-size:28px;flex-shrink:0}
+        .reduce-risk-text{display:flex;flex-direction:column;gap:2px}
+        .reduce-risk-text strong{color:#10b981;font-size:1rem}
+        .reduce-risk-text span{color:#cbd5e1;font-size:0.85rem}
+        .risk-breakdown{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin:0 0 32px}
+        .risk-item{background:rgba(30,41,59,0.8);border:1px solid rgba(71,85,105,0.3);border-radius:12px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;width:150px}
+        .risk-item-layer{font-weight:600;color:#cbd5e1;font-size:12px;margin-top:10px;text-align:center}
+        .mini-circle-wrap{position:relative;width:100px;height:100px;display:flex;align-items:center;justify-content:center}
+        .mini-circle-svg{width:100%;height:100%}
+        .mini-circle-text{position:absolute;text-align:center}
+        .mini-circle-score{font-size:26px;font-weight:bold;color:#f1f5f9}
+        .recommendations{background:rgba(30,41,59,0.8);border:1px solid rgba(71,85,105,0.3);border-radius:12px;padding:26px;margin:0 0 24px;text-align:left}
+        .recommendations h3{color:#f1f5f9;margin-bottom:12px}
+        .recommendation-item{background:rgba(16,185,129,0.08);border-left:3px solid #10b981;padding:13px 16px;margin-bottom:6px;border-radius:6px}
+        .recommendation-item strong{color:#10b981}
+
+        /* ── SPIDER WEB SINGLE CARD ── */
+        .spider-single-wrap{margin-bottom:28px}
+        .spider-single-card{background:rgba(15,23,42,0.85);border:1px solid rgba(71,85,105,0.35);border-radius:14px;padding:24px;text-align:center}
+        .spider-single-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+        .spider-single-header h4{font-size:1rem;color:#f1f5f9;margin:0}
+        .spider-combined-svg{width:100%;max-width:480px;height:auto;display:block;margin:0 auto}
+        .spider-legend{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+        .spider-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8}
+
+        /* ── LIVE RISK REDUCTION STATS ── */
+        .risk-reduction-stats{background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.08));border:1px solid rgba(16,185,129,0.35);border-radius:12px;padding:20px;margin-bottom:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+        .stat-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px;border-radius:8px;background:rgba(15,23,42,0.5)}
+        .stat-label{font-size:0.75rem;font-weight:700;letter-spacing:0.08em;color:#94a3b8;text-transform:uppercase;margin-bottom:8px}
+        .stat-value{font-size:2rem;font-weight:bold;color:#10b981;margin-bottom:4px}
+        .stat-detail{font-size:0.75rem;color:#cbd5e1}
+        .reduction-meter{display:flex;align-items:center;gap:8px;width:100%;margin-top:8px}
+        .reduction-bar{flex:1;height:6px;background:rgba(71,85,105,0.3);border-radius:3px;overflow:hidden}
+        .reduction-fill{height:100%;background:linear-gradient(90deg,#10b981,#059669);border-radius:3px;transition:width 0.4s ease;width:0%}
+        @keyframes statPulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:0.9}100%{transform:scale(1);opacity:1}}
+        .spider-legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+
+        /* ── CONCENTRIC CIRCLES VISUALIZER ── */
+        .concentric-wrap{display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;padding:8px 0 20px}
+        .concentric-left{flex:0 0 440px;display:flex;flex-direction:column;align-items:center}
+        .concentric-hint{font-size:0.75rem;color:#64748b;margin-bottom:12px;letter-spacing:0.04em}
+        .concentric-right{flex:1;min-width:260px}
+        .concentric-stage{position:relative;width:420px;height:420px;display:flex;align-items:center;justify-content:center}
+        @media(max-width:700px){.concentric-left{flex:0 0 300px}.concentric-stage{width:300px;height:300px}}
+
+        /* Each ring is a circle — nested divs, centered via flex */
+        .c-ring{border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:filter 0.25s,transform 0.25s;flex-shrink:0}
+        .c-ring:hover{filter:brightness(1.2);transform:scale(1.03)}
+        .c-ring.selected{filter:brightness(1.35);transform:scale(1.05)}
+
+        /* Sizes: each ring 84px bigger than inner */
+        .c-ring-5{width:420px;height:420px;background:radial-gradient(circle,rgba(207,188,255,0.12) 0%,rgba(207,188,255,0.04) 100%);border:2.5px solid rgba(207,188,255,0.4);box-shadow:0 0 32px rgba(207,188,255,0.15),inset 0 0 40px rgba(207,188,255,0.04)}
+        .c-ring-4{width:336px;height:336px;background:radial-gradient(circle,rgba(207,188,255,0.14) 0%,rgba(207,188,255,0.05) 100%);border:2.5px solid rgba(207,188,255,0.45);box-shadow:0 0 28px rgba(207,188,255,0.12),inset 0 0 32px rgba(207,188,255,0.05)}
+        .c-ring-3{width:252px;height:252px;background:radial-gradient(circle,rgba(207,188,255,0.16) 0%,rgba(207,188,255,0.06) 100%);border:2.5px solid rgba(207,188,255,0.5);box-shadow:0 0 24px rgba(207,188,255,0.15),inset 0 0 24px rgba(207,188,255,0.06)}
+        .c-ring-2{width:168px;height:168px;background:radial-gradient(circle,rgba(207,188,255,0.18) 0%,rgba(207,188,255,0.08) 100%);border:2.5px solid rgba(207,188,255,0.55);box-shadow:0 0 20px rgba(207,188,255,0.18),inset 0 0 18px rgba(207,188,255,0.08)}
+        .c-ring-1{width:84px;height:84px;background:radial-gradient(circle,rgba(207,188,255,0.3) 0%,rgba(207,188,255,0.12) 100%);border:3px solid rgba(207,188,255,0.7);box-shadow:0 0 20px rgba(207,188,255,0.4),inset 0 0 12px rgba(207,188,255,0.15)}
+
+        @media(max-width:700px){
+            .c-ring-5{width:300px;height:300px}
+            .c-ring-4{width:240px;height:240px}
+            .c-ring-3{width:180px;height:180px}
+            .c-ring-2{width:120px;height:120px}
+            .c-ring-1{width:60px;height:60px}
         }
 
-        * {
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
+        /* Labels on each ring (top-aligned inside the ring gap) */
+        .c-ring-label{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;white-space:nowrap;pointer-events:none;z-index:2}
+        .c-ring-num{font-size:11px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+        .c-ring-name{font-size:10px;font-weight:700;letter-spacing:0.06em}
+        .c-ring-label-5 .c-ring-num{background:rgba(207,188,255,0.3);color:#cfbcff}.c-ring-label-5 .c-ring-name{color:#cfbcff}
+        .c-ring-label-4 .c-ring-num{background:rgba(207,188,255,0.3);color:#cfbcff}.c-ring-label-4 .c-ring-name{color:#cfbcff}
+        .c-ring-label-3 .c-ring-num{background:rgba(207,188,255,0.3);color:#cfbcff}.c-ring-label-3 .c-ring-name{color:#cfbcff}
+        .c-ring-label-2 .c-ring-num{background:rgba(207,188,255,0.3);color:#cfbcff}.c-ring-label-2 .c-ring-name{color:#cfbcff}
 
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        /* Center data circle */
+        .c-ring-center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;pointer-events:none}
+        .c-ring-center-icon{font-size:18px;line-height:1;color:#cfbcff}
+        .c-ring-center-text{font-size:9px;font-weight:800;color:#cfbcff;letter-spacing:0.08em;text-transform:uppercase}
+        .c-ring-center-sub{font-size:8px;color:#b8a4ff;opacity:0.8}
 
-        .glass {
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: var(--shadow-glass);
-            backdrop-filter: var(--backdrop-filter);
-            -webkit-backdrop-filter: var(--backdrop-filter);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-        }
+        /* Detail panel */
+        .viz-detail-panel{background:rgba(27,32,39,0.7);backdrop-filter:blur(12px);border:1px solid rgba(207,188,255,0.1);border-radius:12px;padding:12px;min-height:420px}
+        .viz-detail-placeholder{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:380px}
+        .viz-layer-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(207,188,255,0.2)}
+        .viz-layer-badge{font-size:13px;font-weight:700;padding:6px 14px;border-radius:20px}
+        .viz-section-label{font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;margin-top:14px}
+        .viz-threat-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:rgba(207,188,255,0.07);border-left:2px solid #cfbcff;border-radius:4px;margin-bottom:6px;font-size:0.75rem;color:#cfbcff}
+        .viz-control-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:rgba(207,188,255,0.07);border-left:2px solid #cfbcff;border-radius:4px;margin-bottom:6px;font-size:0.75rem;color:#cfbcff}
+        /* ── CONTROLS PAGE ── */
+        .live-score-bar{background:rgba(27,32,39,0.7);backdrop-filter:blur(12px);border:1px solid rgba(207,188,255,0.1);border-radius:12px;padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+        .live-score-label{color:#cbd5e1;font-size:0.88rem;margin-bottom:4px}
+        .live-score-numbers{display:flex;align-items:baseline;gap:10px}
+        .live-score-current{font-size:2.4rem;font-weight:bold;color:#ef4444}
+        .live-score-arrow{color:#94a3b8;font-size:1.1rem}
+        .live-score-reduced{font-size:2.4rem;font-weight:bold;color:#10b981}
+        .live-score-saved{font-size:0.75rem;color:#94a3b8;background:rgba(71,85,105,0.15);padding:4px 10px;border-radius:20px;white-space:nowrap}
+        /* suggestion banner */
+        .suggest-banner{background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(99,102,241,0.08));border:1px solid rgba(59,130,246,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px}
+        .suggest-banner-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+        .suggest-banner-body h4{font-size:0.9rem;color:#93c5fd;margin-bottom:6px}
+        .suggest-banner-body p{font-size:0.83rem;color:#94a3b8;line-height:1.5}
+        .suggest-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+        .suggest-tag{font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);cursor:pointer;transition:all 0.2s}
+        .suggest-tag:hover{background:rgba(59,130,246,0.3)}
+        /* layer sections */
+        .layer-controls-section{background:rgba(30,41,59,0.8);border:1px solid rgba(71,85,105,0.3);border-radius:12px;margin-bottom:12px;overflow:hidden}
+        .layer-controls-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;transition:background 0.2s}
+        .layer-controls-header:hover{background:rgba(71,85,105,0.15)}
+        .layer-header-left{display:flex;align-items:center;gap:10px}
+        .layer-badge{font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px}
+        .layer-progress-pill{font-size:11px;color:#94a3b8;background:rgba(71,85,105,0.2);padding:2px 8px;border-radius:10px}
+        .layer-chevron{color:#94a3b8;font-size:16px;transition:transform 0.3s}
+        .layer-chevron.open{transform:rotate(180deg)}
+        .layer-controls-body{display:none;padding:0 20px 18px}
+        .layer-controls-body.open{display:block}
+        .threat-row{background:rgba(239,68,68,0.07);border-left:3px solid #ef4444;border-radius:6px;padding:10px 14px;margin-bottom:8px}
+        .threat-row-label{font-size:12px;font-weight:600;color:#cfbcff}
+        /* control rows */
+        .control-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:rgba(30,41,59,0.5);border:1px solid rgba(71,85,105,0.25);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:all 0.2s}
+        .control-row:hover{border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.06)}
+        .control-row.applied{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.5)}
+        .control-row.suggested{border-color:rgba(59,130,246,0.5);background:rgba(59,130,246,0.06)}
+        .control-row.suggested.applied{border-color:#10b981;background:rgba(16,185,129,0.1)}
+        .control-checkbox{width:20px;height:20px;border:2px solid rgba(71,85,105,0.6);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.2s;font-size:11px;font-weight:bold;color:white}
+        .control-row:hover .control-checkbox{border-color:#10b981}
+        .control-checkbox.checked{background:#10b981;border-color:#10b981}
+        .control-text-wrap{flex:1}
+        .control-row-top{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+        .control-text-wrap strong{color:#f1f5f9;font-size:0.9rem}
+        .control-badge-suggested{font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,0.2);color:#93c5fd;border:1px solid rgba(59,130,246,0.4);font-weight:600}
+        .control-text-wrap span{color:#94a3b8;font-size:0.81rem;display:block;margin-bottom:4px}
+        .control-meta{display:flex;align-items:center;gap:10px}
+        .control-impact{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
+        .control-priority{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
+        .priority-high{background:rgba(239,68,68,0.12);color:#cfbcff;border:1px solid rgba(239,68,68,0.3)}
+        .priority-med{background:rgba(245,158,11,0.12);color:#fde68a;border:1px solid rgba(245,158,11,0.3)}
+        .priority-low{background:rgba(71,85,105,0.2);color:#94a3b8;border:1px solid rgba(71,85,105,0.4)}
 
-        .gradient-primary {
-            background: var(--gradient-primary);
-        }
-
-        .gradient-success {
-            background: var(--gradient-success);
-        }
-
-        .gradient-warning {
-            background: var(--gradient-warning);
-        }
-
-        .gradient-danger {
-            background: var(--gradient-danger);
-        }
-
-        .floating {
-            animation: floating 6s ease-in-out infinite;
-        }
-
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .slide-in {
-            animation: slideIn 0.5s ease-out forwards;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .status-badge {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .status-badge::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .status-badge:hover::before {
-            left: 100%;
-        }
-
-        .glow {
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
-
-        .progress-ring circle {
-            transition: stroke-dashoffset 0.5s ease-in-out;
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6B73FF 100%);
-            min-height: 100vh;
-        }
-
-        .nav-item {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 3px;
-            background: var(--gradient-primary);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-        }
-
-        .nav-item.active::before {
-            transform: scaleY(1);
-        }
+        /* ── GUIDELINES PAGE ── */
+        .framework-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+        .framework-tab{padding:10px 20px;border-radius:8px;border:1.5px solid rgba(16,185,129,0.4);background:transparent;color:#cbd5e1;cursor:pointer;font-size:0.88rem;transition:all 0.25s;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;display:flex;align-items:center;gap:8px}
+        .framework-tab.active{background:rgba(16,185,129,0.15);border-color:#10b981;color:#10b981;box-shadow:0 0 20px rgba(16,185,129,0.3)}
+        .framework-tab:hover{border-color:#10b981;color:#10b981}
+        .framework-content{display:none}.framework-content.active{display:block}
+        .guideline-card{background:rgba(27,32,39,0.7);backdrop-filter:blur(12px);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 0 15px rgba(16,185,129,0.1)}
+        .guideline-card h3{color:#10b981;font-size:0.98rem;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;display:flex;align-items:center;gap:8px}
+        .guideline-card p{color:#cbd5e1;font-size:0.85rem;line-height:1.7}
+        .guideline-tag{display:inline-block;font-size:11px;padding:4px 12px;border-radius:16px;background:transparent;color:#10b981;border:1.5px solid rgba(16,185,129,0.5);margin-right:6px;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.03em;font-weight:600;transition:all 0.2s}
+        .guideline-tag:hover{background:rgba(16,185,129,0.15);border-color:#10b981;box-shadow:0 0 10px rgba(16,185,129,0.3)}
     </style>
 </head>
 <body>
-    <div id="root"></div>
+<div class="container">
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+<!-- ══════════ WELCOME PAGE ══════════ -->
+<div id="welcome-page" class="page active">
+    <header>
+        <div class="page-nav"><button class="nav-arrow" id="btn-back-welcome" onclick="navBack()" disabled>&#8592; Back</button><span class="nav-arrow-sep">|</span><button class="nav-arrow" id="btn-fwd-welcome" onclick="navForward()" disabled>Forward &#8594;</button><span class="nav-breadcrumb" id="breadcrumb-welcome"></span></div>
+        <div><h1>🛡️ MACRON-AI</h1><p class="subtitle">Interactive 5-Layer Model · NIST AI RMF · ISO/IEC 42001</p></div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="goToPage('welcome')">🏠 Home</button>
+            <button class="nav-tab" onclick="goToPage('visualizer')">🔍 Explore Layers</button>
+            <button class="nav-tab" onclick="goToPage('assessment')">📋 Assessment</button>
+            <button class="nav-tab" onclick="goToPage('guidelines')">🔐 Guidelines</button>
+        </div>
+    </header>
+    <div class="welcome-hero">
+        <h1 style="display:none">Secure Your AI Systems</h1>
+        <p style="display:none">Identify vulnerabilities across 5 critical layers. Get risk scores, actionable controls, and framework-mapped guidelines tailored to your organization.</p>
+        <button class="btn-primary" onclick="goToPage('assessment')" style="margin-right:12px">Start Risk Assessment</button>
+        <button class="btn-secondary" onclick="goToPage('visualizer')" style="display:none">Explore Layers</button>
+    </div>
+    <!-- 3D Spiderweb Visualization -->
+    <div class="home-spiderweb-container">
+        <div class="spiderweb-3d">
+            <div class="spiderweb-info">
+                <div class="spiderweb-info-item">💡 Transform AI Risks into Controls</div>
+                <div class="spiderweb-info-item">🔐 Identify → Analyze → Mitigate</div>
+            </div>
+            <div class="spiderweb-layers">
+                <div class="spiderweb-ring spiderweb-ring-5"></div>
+                <div class="spiderweb-ring spiderweb-ring-4"></div>
+                <div class="spiderweb-ring spiderweb-ring-3"></div>
+                <div class="spiderweb-ring spiderweb-ring-2"></div>
+                <div class="spiderweb-ring spiderweb-ring-1"></div>
+                <div class="spiderweb-center">🛡️</div>
+                <div class="spiderweb-label layer-data">DATA</div>
+                <div class="spiderweb-label layer-model">MODEL_WEIGHTS</div>
+                <div class="spiderweb-label layer-app">APP_LOGIC</div>
+                <div class="spiderweb-label layer-infra">INFRA</div>
+                <div class="spiderweb-label layer-network">NETWORK</div>
+                <div class="spiderweb-label layer-compliance">COMPLIANCE</div>
+            </div>
+        </div>
+    </div>
+    <div class="process-steps">
+        <div class="step-card"><div class="step-number">1</div><h3>Fill Assessment</h3><p>Answer questions about your system, data, and deployment</p></div>
+        <div class="step-card"><div class="step-number">2</div><h3>Get Risk Score</h3><p>See your risk calculated per layer with circular visualizations</p></div>
+        <div class="step-card"><div class="step-number">3</div><h3>Apply Controls</h3><p>Toggle mitigations and watch your risk score drop in real-time</p></div>
+    </div>
+</div>
 
-        // Icons using inline SVG for compatibility
-        const Shield = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+<!-- ══════════ VISUALIZER PAGE ══════════ -->
+<div id="visualizer-page" class="page">
+    <header>
+        <div class="page-nav"><button class="nav-arrow" id="btn-back-visualizer" onclick="navBack()" disabled>&#8592; Back</button><span class="nav-arrow-sep">|</span><button class="nav-arrow" id="btn-fwd-visualizer" onclick="navForward()" disabled>Forward &#8594;</button><span class="nav-breadcrumb" id="breadcrumb-visualizer"></span></div>
+        <div><h1>🎯 Interactive Layer Visualizer</h1><p class="subtitle">Click any layer to explore threats and controls</p></div>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="goToPage('welcome')">🏠 Home</button>
+            <button class="nav-tab active" onclick="goToPage('visualizer')">🔍 Explore Layers</button>
+            <button class="nav-tab" onclick="goToPage('assessment')">📋 Assessment</button>
+            <button class="nav-tab" onclick="goToPage('guidelines')">🔐 Guidelines</button>
+        </div>
+    </header>
+    <div class="hero-banner">
+        <div class="hero-content">
+            <div class="hero-icon">🛡️</div>
+            <div class="hero-text">
+                <h2>Secure Your AI Systems</h2>
+                <p>Understand threats and controls across 5 critical layers</p>
+            </div>
+        </div>
+    </div>
+    <div class="concentric-wrap">
+        <div class="concentric-left">
+            <div class="concentric-hint">💡 Click any layer to explore</div>
+            <div class="concentric-stage" id="concentric-stage">
+                <div class="c-ring c-ring-5" id="ring-compliance" onclick="selectLayer('compliance')" title="Compliance Layer">
+                    <div class="c-ring-label c-ring-label-5"><span class="c-ring-num">5</span><span class="c-ring-name">COMPLIANCE</span></div>
+                    <div class="c-ring c-ring-4" id="ring-infra" onclick="selectLayer('infra');event.stopPropagation()" title="Infrastructure Layer">
+                        <div class="c-ring-label c-ring-label-4"><span class="c-ring-num">4</span><span class="c-ring-name">INFRASTRUCTURE</span></div>
+                        <div class="c-ring c-ring-3" id="ring-app" onclick="selectLayer('app');event.stopPropagation()" title="Application Layer">
+                            <div class="c-ring-label c-ring-label-3"><span class="c-ring-num">3</span><span class="c-ring-name">APPLICATION</span></div>
+                            <div class="c-ring c-ring-2" id="ring-model" onclick="selectLayer('model');event.stopPropagation()" title="AI System Layer">
+                                <div class="c-ring-label c-ring-label-2"><span class="c-ring-num">2</span><span class="c-ring-name">AI SYSTEM</span></div>
+                                <div class="c-ring c-ring-1" id="ring-data" onclick="selectLayer('data');event.stopPropagation()" title="Data Layer">
+                                    <div class="c-ring-center">
+                                        <div class="c-ring-center-icon">🗄️</div>
+                                        <div class="c-ring-center-text">DATA</div>
+                                        <div class="c-ring-center-sub">Layer 1</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="concentric-right">
+            <div id="viz-detail-panel" class="viz-detail-panel">
+                <div class="viz-detail-placeholder">
+                    <div style="font-size:3rem;margin-bottom:12px">🎯</div>
+                    <div style="font-size:1rem;color:#94a3b8;margin-bottom:6px">Select a layer</div>
+                    <div style="font-size:0.83rem;color:#64748b">Click any ring to explore its threats and security controls</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-container" style="margin-top:24px">
+        <button class="btn-primary" onclick="goToPage('assessment')">Start Risk Assessment →</button>
+    </div>
+</div>
+
+<!-- ══════════ ASSESSMENT PAGE ══════════ -->
+<div id="assessment-page" class="page">
+    <header>
+        <div class="page-nav"><button class="nav-arrow" id="btn-back-assessment" onclick="navBack()" disabled>&#8592; Back</button><span class="nav-arrow-sep">|</span><button class="nav-arrow" id="btn-fwd-assessment" onclick="navForward()" disabled>Forward &#8594;</button><span class="nav-breadcrumb" id="breadcrumb-assessment"></span></div>
+        <div><h1>📋 Risk Assessment</h1><p class="subtitle">Answer all fields to calculate your AI risk score</p></div>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="goToPage('welcome')">🏠 Home</button>
+            <button class="nav-tab" onclick="goToPage('visualizer')">🔍 Explore Layers</button>
+            <button class="nav-tab active" onclick="goToPage('assessment')">📋 Assessment</button>
+            <button class="nav-tab" onclick="goToPage('guidelines')">🔐 Guidelines</button>
+        </div>
+    </header>
+    <div class="form-container">
+        <div class="step-progress"><div class="step-dot done" id="sp1"></div><div class="step-dot" id="sp2"></div><div class="step-dot" id="sp3"></div></div>
+
+        <!-- STEP 1 -->
+        <div id="form-step-1">
+            <div class="form-step-header"><h2>📋 Step 1 — System Overview & Data</h2><p>Tell us about your system and the data it handles</p></div>
+            <div class="form-group">
+                <label>System Name (optional)</label>
+                <input type="text" id="system-name" placeholder="e.g., Customer Support AI Agent">
+            </div>
+            <div class="form-group">
+                <label>Primary Users *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><input type="radio" name="primary-users" value="public" id="u1"><label for="u1">Public</label></div>
+                    <div class="radio-option"><input type="radio" name="primary-users" value="authenticated" id="u2"><label for="u2">Authenticated</label></div>
+                    <div class="radio-option"><input type="radio" name="primary-users" value="internal" id="u3"><label for="u3">Internal Only</label></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Data Sensitivity *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><input type="radio" name="data-sensitivity" value="public" id="d1"><label for="d1">Public</label></div>
+                    <div class="radio-option"><input type="radio" name="data-sensitivity" value="internal" id="d2"><label for="d2">Internal</label></div>
+                    <div class="radio-option"><input type="radio" name="data-sensitivity" value="confidential" id="d3"><label for="d3">Confidential</label></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>AI System Deployment *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><input type="radio" name="model-hosting" value="vendor-api" id="h1"><label for="h1">Vendor API</label></div>
+                    <div class="radio-option"><input type="radio" name="model-hosting" value="managed-cloud" id="h2"><label for="h2">Managed Cloud</label></div>
+                    <div class="radio-option"><input type="radio" name="model-hosting" value="private-vpc" id="h3"><label for="h3">Private VPC</label></div>
+                </div>
+            </div>
+            <div class="btn-container"><button class="btn-primary" onclick="nextStep(1)">Next →</button></div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div id="form-step-2" style="display:none">
+            <div class="form-step-header"><h2>🤖 Step 2 — Autonomy & Training</h2><p>Tell us about your AI agent capabilities</p></div>
+            <div class="form-group">
+                <label>Agent Autonomy Level *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><input type="radio" name="autonomy" value="read-only" id="a1"><label for="a1">Read-Only</label></div>
+                    <div class="radio-option"><input type="radio" name="autonomy" value="supervised" id="a2"><label for="a2">Supervised</label></div>
+                    <div class="radio-option"><input type="radio" name="autonomy" value="agentic" id="a3"><label for="a3">Fully Agentic</label></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Custom Fine-tuning *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><input type="radio" name="fine-tuning" value="no" id="f1"><label for="f1">No</label></div>
+                    <div class="radio-option"><input type="radio" name="fine-tuning" value="yes" id="f2"><label for="f2">Yes</label></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Third-Party Integrations *</label>
+                <select id="integrations">
+                    <option value="">-- Select --</option>
+                    <option value="none">None</option>
+                    <option value="1-3">1–3 Integrations</option>
+                    <option value="4-7">4–7 Integrations</option>
+                    <option value="8plus">8+ Integrations</option>
+                </select>
+            </div>
+            <div class="btn-container">
+                <button class="btn-secondary" onclick="prevStep(2)">← Back</button>
+                <button class="btn-primary" onclick="nextStep(2)">Next →</button>
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div id="form-step-3" style="display:none">
+            <div class="form-step-header"><h2>🔌 Step 3 — Use Case & Deployment</h2><p>Final details about your AI system</p></div>
+            <div class="form-group">
+                <label>Primary Use Case *</label>
+                <select id="use-case">
+                    <option value="">-- Select --</option>
+                    <option value="support">Customer Support</option>
+                    <option value="analysis">Data Analysis</option>
+                    <option value="content">Content Generation</option>
+                    <option value="coding">Code Generation</option>
+                    <option value="search">Search / RAG</option>
+                    <option value="automation">Automation</option>
+                    <option value="medical">Medical / Healthcare</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Additional Notes (optional)</label>
+                <textarea id="additional-notes" rows="3" placeholder="Any specific security concerns..."></textarea>
+            </div>
+            <div class="btn-container">
+                <button class="btn-secondary" onclick="prevStep(3)">← Back</button>
+                <button class="btn-primary" onclick="calculateRisk()">🚀 Calculate Risk Score</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ RESULTS PAGE ══════════ -->
+<div id="results-page" class="page">
+    <header>
+        <div class="page-nav"><button class="nav-arrow" id="btn-back-results" onclick="navBack()" disabled>&#8592; Back</button><span class="nav-arrow-sep">|</span><button class="nav-arrow" id="btn-fwd-results" onclick="navForward()" disabled>Forward &#8594;</button><span class="nav-breadcrumb" id="breadcrumb-results"></span></div>
+        <div><h1>📊 Risk Assessment Results</h1><p class="subtitle" id="system-display">System: — | Date: —</p></div>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="goToPage('welcome')">🏠 Home</button>
+            <button class="nav-tab" onclick="goToPage('visualizer')">🔍 Explore Layers</button>
+            <button class="nav-tab" onclick="goToPage('assessment')">📋 Assessment</button>
+            <button class="nav-tab" onclick="goToPage('guidelines')">🔐 Guidelines</button>
+        </div>
+    </header>
+    <div class="results-container">
+        <h2 style="margin-bottom:20px;color:#f1f5f9">Overall AI Risk Score</h2>
+        <div class="risk-score-circle">
+            <svg class="risk-circle" viewBox="0 0 300 300">
+                <defs>
+                    <linearGradient id="riskGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#10b981"/>
+                        <stop offset="50%" stop-color="#f59e0b"/>
+                        <stop offset="100%" stop-color="#ef4444"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="150" cy="150" r="140" fill="none" stroke="rgba(71,85,105,0.25)" stroke-width="2"/>
+                <circle cx="150" cy="150" r="140" fill="none" stroke="url(#riskGrad)" stroke-width="9" stroke-dasharray="880" stroke-dashoffset="880" id="risk-circle-progress" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:150px 150px;transition:stroke-dashoffset 1.2s ease-in-out"/>
             </svg>
-        );
+            <div class="risk-score-text">
+                <div class="risk-score-number" id="overall-risk">0</div>
+                <div class="risk-score-label">Risk Score</div>
+            </div>
+        </div>
 
-        const Upload = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
-        );
+        <!-- REDUCE RISK BANNER -->
+        <div class="reduce-risk-banner" onclick="goToPage('controls')">
+            <span class="reduce-risk-icon">🛡️</span>
+            <div class="reduce-risk-text">
+                <strong>Reduce Your Risk Score</strong>
+                <span>Apply security controls to mitigate threats across all layers →</span>
+            </div>
+        </div>
 
-        const FileText = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-        );
+        <!-- LAYER MINI CIRCLES -->
+        <div class="risk-breakdown" id="layer-breakdown"></div>
 
-        const Search = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-        );
+        <!-- RECOMMENDATIONS -->
+        <div class="recommendations">
+            <h3>📋 Recommended Security Controls</h3>
+            <div id="recommendations-list"></div>
+        </div>
 
-        const Users = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-        );
+        <div class="btn-container">
+            <button class="btn-secondary" onclick="goToPage('assessment')">← New Assessment</button>
+            <button class="btn-secondary" onclick="goToPage('guidelines')">View Guidelines</button>
+            <button class="btn-primary" onclick="goToPage('controls')">Apply Controls 🛡️</button>
+        </div>
+    </div>
+</div>
 
-        const AlertTriangle = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.502 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-        );
+<!-- ══════════ CONTROLS PAGE ══════════ -->
+<div id="controls-page" class="page">
+    <header>
+        <div class="page-nav"><button class="nav-arrow" id="btn-back-controls" onclick="navBack()" disabled>&#8592; Back</button><span class="nav-arrow-sep">|</span><button class="nav-arrow" id="btn-fwd-controls" onclick="navForward()" disabled>Forward &#8594;</button><span class="nav-breadcrumb" id="breadcrumb-controls"></span></div>
+        <div><h1>🛡️ Threats & Controls</h1><p class="subtitle">Toggle controls to mitigate threats and reduce your risk score live</p></div>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="goToPage('welcome')">🏠 Home</button>
+            <button class="nav-tab" onclick="goToPage('results')">📊 Results</button>
+            <button class="nav-tab" onclick="goToPage('guidelines')">🔐 Guidelines</button>
+        </div>
+    </header>
+    <div class="live-score-bar">
+        <div>
+            <div class="live-score-label">Risk Score</div>
+            <div class="live-score-numbers">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <div style="font-size:10px;font-weight:600;color:#cfbcff;letter-spacing:0.06em;text-transform:uppercase">Before</div>
+                    <div class="live-score-current" id="ctrl-original-score">—</div>
+                </div>
+                <div class="live-score-arrow">→</div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <div style="font-size:10px;font-weight:600;color:#cfbcff;letter-spacing:0.06em;text-transform:uppercase">After</div>
+                    <div class="live-score-reduced" id="ctrl-current-score">—</div>
+                </div>
+            </div>
+        </div>
+        <div class="live-score-saved" id="ctrl-saved-points">Select controls to reduce score</div>
+    </div>
 
-        const Bot = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-        );
+    <!-- SPIDER WEB COMBINED BEFORE / AFTER -->
+    <div class="spider-single-wrap">
+        <div class="spider-single-card">
+            <div class="spider-single-header">
+                <h4>🕸️ Risk Spider Web — Before vs After Controls</h4>
+                <div class="spider-legend">
+                    <div class="spider-legend-item"><div class="spider-legend-dot" style="background:#ef4444"></div><span>Before (risk exposure)</span></div>
+                    <div class="spider-legend-item"><div class="spider-legend-dot" style="background:#10b981"></div><span>After (mitigated risk)</span></div>
+                </div>
+            </div>
 
-        const Clock = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-        );
+            <!-- LIVE RISK REDUCTION STATS -->
+            <div class="risk-reduction-stats" id="risk-stats-panel">
+                <div class="stat-card">
+                    <div class="stat-label">Avg Risk Reduction</div>
+                    <div class="stat-value" id="avg-reduction">0%</div>
+                    <div class="stat-detail" id="avg-detail">No controls selected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Controls Applied</div>
+                    <div class="stat-value" id="controls-count">0</div>
+                    <div class="stat-detail">out of available controls</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Risk Score Change</div>
+                    <div style="display:flex;align-items:baseline;gap:6px;justify-content:center;">
+                        <span class="stat-value" id="risk-before" style="color:#cfbcff;font-size:1.5rem;">0</span>
+                        <span style="color:#94a3b8;">→</span>
+                        <span class="stat-value" id="risk-after" style="color:#cfbcff;font-size:1.5rem;">0</span>
+                    </div>
+                    <div class="stat-detail">Overall baseline score</div>
+                </div>
+            </div>
 
-        const CheckCircle = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-        );
+            <svg id="spider-combined" class="spider-combined-svg" viewBox="0 0 480 480"></svg>
+        </div>
+    </div>
+    <div id="controls-layers-container"></div>
+    <div class="btn-container" style="margin-top:24px">
+        <button class="btn-secondary" onclick="goToPage('results')">← Back to Results</button>
+        <button class="btn-primary" onclick="goToPage('guidelines')">View Guidelines 🔐</button>
+    </div>
+</div>
 
-        const User = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-        );
+<!-- ══════════ GUIDELINES PAGE ══════════ -->
+<div id="guidelines-page" class="page">
+    <header>
+        <div class="page-nav"><button class="nav-arrow" id="btn-back-guidelines" onclick="navBack()" disabled>&#8592; Back</button><span class="nav-arrow-sep">|</span><button class="nav-arrow" id="btn-fwd-guidelines" onclick="navForward()" disabled>Forward &#8594;</button><span class="nav-breadcrumb" id="breadcrumb-guidelines"></span></div>
+        <div><h1>🔐 Dynamic Security Guidelines</h1><p class="subtitle">Framework-mapped controls: 5-Layer · NIST AI RMF · ISO/IEC 42001</p></div>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="goToPage('welcome')">🏠 Home</button>
+            <button class="nav-tab" onclick="goToPage('visualizer')">🔍 Explore Layers</button>
+            <button class="nav-tab" onclick="goToPage('assessment')">📋 Assessment</button>
+            <button class="nav-tab active" onclick="goToPage('guidelines')">🔐 Guidelines</button>
+        </div>
+    </header>
+    <div class="framework-tabs">
+        <button class="framework-tab active" onclick="switchFramework('layer5')">📊 5-Layer Model</button>
+        <button class="framework-tab" onclick="switchFramework('nist')">🏛️ NIST AI RMF</button>
+        <button class="framework-tab" onclick="switchFramework('iso')">📋 ISO/IEC 42001</button>
+    </div>
 
-        const TrendingUp = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
-        );
+    <!-- 5-LAYER -->
+    <div id="fw-layer5" class="framework-content active">
+        <div class="guideline-card"><h3>🗄️ Layer 1 — Data Protection</h3><span class="guideline-tag">Encryption</span><span class="guideline-tag">Access Control</span><span class="guideline-tag">Provenance</span><p>Encrypt all training and inference data at rest and in transit. Implement data lineage tracking, input sanitization pipelines, and PII detection before data reaches the model. Apply differential privacy for sensitive datasets.</p></div>
+        <div class="guideline-card"><h3>🤖 Layer 2 — AI System Security</h3><span class="guideline-tag">Prompt Guardrails</span><span class="guideline-tag">Output Filtering</span><span class="guideline-tag">Model Integrity</span><p>Deploy prompt injection detection, output filters, and model integrity verification. Enforce rate limiting on inference endpoints. Separate system and user prompt contexts to prevent hijacking. Monitor model behavior drift over time.</p></div>
+        <div class="guideline-card"><h3>⚙️ Layer 3 — Application Security</h3><span class="guideline-tag">Least Privilege</span><span class="guideline-tag">Human-in-Loop</span><span class="guideline-tag">Content Filtering</span><span class="guideline-tag">Audit Logging</span><p>Apply least-privilege access for all AI agents and plugins. Deploy content filtering at the input layer to detect and block prompt injection patterns before they reach the model. Require human approval for high-stakes autonomous actions. Implement comprehensive audit logging for all agent decisions. Sandbox agentic operations with clearly defined scope limits and sanitize all inputs and outputs at the API boundary.</p></div>
+        <div class="guideline-card"><h3>🌐 Layer 4 — Infrastructure Security</h3><span class="guideline-tag">Secrets Management</span><span class="guideline-tag">Network Isolation</span><span class="guideline-tag">SCA Scanning</span><p>Use dedicated secrets managers (HashiCorp Vault, AWS KMS) for all API keys and credentials. Enforce network segmentation around AI inference endpoints. Run software composition analysis on all dependencies. Verify model artifact checksums before deployment.</p></div>
+        <div class="guideline-card"><h3>📋 Layer 5 — Compliance & Governance</h3><span class="guideline-tag">DPIA</span><span class="guideline-tag">AI Act</span><span class="guideline-tag">Data Minimization</span><span class="guideline-tag">Zero Retention</span><span class="guideline-tag">Explainability</span><p>Conduct Data Protection Impact Assessments (DPIA) for high-risk AI systems. Enforce data minimization — collect only what is strictly necessary. Define and automate data retention and deletion schedules. Require contractual guarantees that the AI supplier will not train on your data and applies zero data retention on their end. Map controls to EU AI Act risk categories and implement explainability tooling (SHAP/LIME) for auditable decisions.</p></div>
+    </div>
 
-        const Bell = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5-5-5h5V7a5 5 0 015 5v5z" />
-            </svg>
-        );
+    <!-- NIST -->
+    <div id="fw-nist" class="framework-content">
+        <div class="guideline-card"><h3>🏛️ GOVERN — Policies & Culture</h3><span class="guideline-tag">GOVERN 1.1</span><span class="guideline-tag">GOVERN 2.2</span><p>Establish organizational AI risk management policies. Define roles, responsibilities, and accountability structures. Foster a culture of AI risk awareness across teams. Set risk tolerance thresholds for different AI use cases.</p></div>
+        <div class="guideline-card"><h3>🗺️ MAP — Risk Identification</h3><span class="guideline-tag">MAP 1.5</span><span class="guideline-tag">MAP 2.1</span><p>Identify and categorize AI risks by impact and likelihood. Map threats to business processes and data flows. Document AI system context, purpose, and stakeholder impact. Establish threat modeling practices for each deployment.</p></div>
+        <div class="guideline-card"><h3>📐 MEASURE — Risk Assessment</h3><span class="guideline-tag">MEASURE 2.5</span><span class="guideline-tag">MEASURE 4.1</span><p>Quantify AI risks with defined metrics and scoring. Conduct bias, fairness, and robustness evaluations. Test adversarial resilience including prompt injection and evasion. Benchmark model performance against security baselines.</p></div>
+        <div class="guideline-card"><h3>🔧 MANAGE — Risk Treatment</h3><span class="guideline-tag">MANAGE 1.3</span><span class="guideline-tag">MANAGE 3.1</span><p>Implement prioritized controls to mitigate identified risks. Define incident response playbooks for AI-specific failures. Continuously monitor deployed systems for behavioral anomalies. Review and update controls as the threat landscape evolves.</p></div>
+    </div>
 
-        const Plus = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-        );
+    <!-- ISO -->
+    <div id="fw-iso" class="framework-content">
+        <div class="guideline-card"><h3>📋 Annex A.2 — AI Policies</h3><span class="guideline-tag">A.2.2</span><span class="guideline-tag">A.2.6</span><p>Develop and maintain an AI management system policy. Define objectives, scope, and leadership commitment. Integrate AI governance into existing ISMS (ISO 27001) structures. Document AI system lifecycle management procedures.</p></div>
+        <div class="guideline-card"><h3>🧠 Annex A.4 — AI System Impact</h3><span class="guideline-tag">A.4.1</span><span class="guideline-tag">A.4.3</span><p>Assess the intended and unintended impacts of AI systems on individuals and society. Document impact assessments before deployment. Identify vulnerable groups and establish appropriate safeguards. Review impacts continuously post-deployment.</p></div>
+        <div class="guideline-card"><h3>🔒 Annex A.6 — AI System Security</h3><span class="guideline-tag">A.6.1</span><span class="guideline-tag">A.6.2</span><p>Implement security controls specific to AI system risks throughout the lifecycle. Address data quality, model integrity, and operational security. Conduct security testing including adversarial robustness. Ensure supply chain security for AI components and dependencies.</p></div>
+        <div class="guideline-card"><h3>📢 Annex A.9 — Transparency</h3><span class="guideline-tag">A.9.1</span><span class="guideline-tag">A.9.3</span><p>Provide clear documentation of AI system capabilities and limitations. Disclose AI use to affected individuals where required. Implement explainability mechanisms for high-stakes decisions. Maintain records of AI system versions and configuration changes.</p></div>
+    </div>
+</div>
 
-        const Eye = ({ className = "w-6 h-6" }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-        );
+</div><!-- /container -->
 
-        // Request Status Component
-        const RequestStatus = ({ assessments = [], setAssessments }) => {
-            const [requests, setRequests] = useState([
-                {
-                    id: 'REQ-001',
-                    title: 'Security Assessment - TechCorp Partnership',
-                    type: 'Security Assessment',
-                    status: 'pending',
-                    priority: 'high',
-                    submittedBy: 'John Smith',
-                    submittedAt: new Date('2024-12-08T10:00:00'),
-                    lastUpdated: new Date('2024-12-08T14:30:00'),
-                    description: 'Complete security assessment for new technology partnership with TechCorp including infrastructure review and compliance verification.',
-                    assignee: 'Security Team Alpha',
-                    estimatedCompletion: new Date('2024-12-12T17:00:00'),
-                    attachments: ['security-requirements.pdf', 'network-diagram.png']
-                },
-                {
-                    id: 'REQ-002', 
-                    title: 'Background Check - New CISO Candidate',
-                    type: 'Background Check',
-                    status: 'in-progress',
-                    priority: 'medium',
-                    submittedBy: 'HR Department',
-                    submittedAt: new Date('2024-12-07T09:15:00'),
-                    lastUpdated: new Date('2024-12-08T11:20:00'),
-                    description: 'Comprehensive background verification for Chief Information Security Officer candidate including previous employment and security clearance verification.',
-                    assignee: 'Background Check Team',
-                    estimatedCompletion: new Date('2024-12-10T16:00:00'),
-                    progress: 65
-                },
-                {
-                    id: 'REQ-003',
-                    title: 'Domain Security Scan - subsidiary-corp.com',
-                    type: 'Domain Scan',
-                    status: 'completed',
-                    priority: 'low',
-                    submittedBy: 'Network Admin',
-                    submittedAt: new Date('2024-12-05T14:00:00'),
-                    lastUpdated: new Date('2024-12-06T10:30:00'),
-                    description: 'Security vulnerability scan of subsidiary domain including SSL certificate verification and penetration testing.',
-                    assignee: 'Security Scan Bot',
-                    completedAt: new Date('2024-12-06T10:30:00'),
-                    results: 'No critical vulnerabilities found. 2 medium-priority issues resolved.'
-                }
-            ]);
+<script>
+// ══ LAYER DATA ══
+const layerData = {
+    data:       { name:'🗄️ Data Layer',       color:'#10b981', threats:['Data Poisoning','PII/Sensitive Data Leakage','Training Data Manipulation','Unauthorized Data Access'], controls:['Input Validation & Sanitization','Differential Privacy','Data Masking & Tokenization','Data Provenance Tracking','Encryption at Rest & Transit'] },
+    model:      { name:'🤖 AI System Layer',   color:'#3b82f6', threats:['Prompt Injection Attacks','Model Inversion / Extraction','Adversarial Examples','Model Weight Tampering'], controls:['Prompt Filtering & Guardrails','System Prompt Isolation','Output Filtering','Rate Limiting on Inference','Model Integrity Verification'] },
+    app:        { name:'⚙️ Application Layer', color:'#f59e0b', threats:['Insecure Plugin / Tool Use','Excessive Autonomous Actions','Prompt Injection via User Input','Insecure Output Handling'], controls:['Least-Privilege Tool Access','Human-in-the-Loop Approvals','Content Filtering for Prompt Injections','Action Audit Logging','Scope Limiting & Sandboxing','Input / Output Escaping'] },
+    infra:      { name:'🌐 Infrastructure',    color:'#a855f7', threats:['API Key Exposure','Supply Chain Attacks','Network Interception','Unauthorized Model Access'], controls:['Secrets Management (Vault/KMS)','API Key Rotation Policy','Model Integrity Checksums','Dependency Scanning (SCA)','Network Segmentation'] },
+    compliance: { name:'📋 Compliance',        color:'#ef4444', threats:['GDPR / HIPAA Violations','AI Act Non-compliance','Lack of Explainability','Missing Audit Trails','Excessive Data Retention','Model Training on User Data'], controls:['AI Impact Assessment (DPIA)','Data Minimization Policy','Data Retention & Deletion Policy','Zero Data Retention with Supplier','Model Will Not Train on Data (contractual)','Compliance Monitoring Dashboard','Explainability Tooling (XAI)','Decision Audit Trails'] }
+};
 
-            const [selectedRequest, setSelectedRequest] = useState(null);
-            const [showNewRequestForm, setShowNewRequestForm] = useState(false);
-            const [newRequest, setNewRequest] = useState({
-                title: '',
-                type: 'Security Assessment',
-                priority: 'medium',
-                description: ''
+// ══ VISUALIZER ══
+function renderVisualizerButtons() {
+    const btns = document.getElementById('layer-buttons');
+    if (!btns) return;
+    btns.innerHTML = Object.entries(layerData).map(([id, l]) =>
+        `<button class="layer-btn" id="btn-${id}" style="--lc:${l.color}" onclick="selectLayer('${id}')">
+            <div class="layer-dot" style="background:${l.color}"></div>
+            <span class="layer-btn-name">${l.name}</span>
+         </button>`
+    ).join('');
+}
+
+function selectLayer(id) {
+    const l = layerData[id];
+    if (!l) return;
+    // Highlight selected ring
+    document.querySelectorAll('.c-ring').forEach(r => r.classList.remove('selected'));
+    const ring = document.getElementById('ring-' + id);
+    if (ring) ring.classList.add('selected');
+    // Update detail panel
+    const panel = document.getElementById('viz-detail-panel');
+    if (!panel) return;
+    panel.innerHTML = `
+        <div class="viz-layer-header">
+            <div class="viz-layer-badge" style="background:${l.color}22;color:${l.color};border:1px solid ${l.color}55">${l.name}</div>
+        </div>
+        <div class="viz-section-label" style="color:#ef4444">⚠️ Threats</div>
+        ${l.threats.map(t => `<div class="viz-threat-item"><span>⚠</span><span>${t}</span></div>`).join('')}
+        <div class="viz-section-label" style="color:#10b981">✓ Controls</div>
+        ${l.controls.map(c => `<div class="viz-control-item"><span>✓</span><span>${c}</span></div>`).join('')}
+    `;
+}
+
+// ══ FORM STEPS ══
+function nextStep(current) {
+    document.getElementById('form-step-' + current).style.display = 'none';
+    document.getElementById('form-step-' + (current + 1)).style.display = 'block';
+    document.getElementById('sp' + (current + 1)).classList.add('done');
+    window.scrollTo(0, 0);
+}
+function prevStep(current) {
+    document.getElementById('form-step-' + current).style.display = 'none';
+    document.getElementById('form-step-' + (current - 1)).style.display = 'block';
+    window.scrollTo(0, 0);
+}
+
+// ══ RISK CALC ══
+const riskWeights = {
+    'data-layer':       { 'public':10, 'internal':30, 'confidential':50 },
+    'model-layer':      { 'vendor-api':15, 'managed-cloud':25, 'private-vpc':10 },
+    'app-layer':        { 'read-only':10, 'supervised':25, 'agentic':45 },
+    'infra-layer':      { 'none':5, '1-3':15, '4-7':30, '8plus':45 },
+    'compliance-layer': { 'public':5, 'authenticated':20, 'internal':10 }
+};
+
+function calculateRisk() {
+    const systemName    = document.getElementById('system-name').value || 'Unnamed System';
+    const users         = document.querySelector('input[name="primary-users"]:checked')?.value;
+    const dataSens      = document.querySelector('input[name="data-sensitivity"]:checked')?.value;
+    const modelHosting  = document.querySelector('input[name="model-hosting"]:checked')?.value;
+    const autonomy      = document.querySelector('input[name="autonomy"]:checked')?.value;
+    const fineTuning    = document.querySelector('input[name="fine-tuning"]:checked')?.value;
+    const integrations  = document.getElementById('integrations').value;
+    const useCase       = document.getElementById('use-case').value;
+
+    if (!users || !dataSens || !modelHosting || !autonomy || !fineTuning || !integrations || !useCase) {
+        alert('⚠️ Please complete all required fields (marked with *)');
+        return;
+    }
+
+    const dataScore       = riskWeights['data-layer'][dataSens] || 0;
+    const modelScore      = riskWeights['model-layer'][modelHosting] || 0;
+    const appScore        = riskWeights['app-layer'][autonomy] || 0;
+    const infraScore      = riskWeights['infra-layer'][integrations] || 0;
+    const complianceScore = riskWeights['compliance-layer'][users] || 0;
+    const overallRisk     = Math.round((dataScore + modelScore + appScore + infraScore + complianceScore) / 5);
+
+    window.assessmentData = { systemName, users, dataSens, modelHosting, autonomy, fineTuning, integrations, useCase, dataScore, modelScore, appScore, infraScore, complianceScore, overallRisk };
+
+    goToPage('results');
+    setTimeout(() => displayResults(), 60);
+}
+
+function displayResults() {
+    const d = window.assessmentData;
+    if (!d) return;
+
+    const sdEl = document.getElementById('system-display');
+    if (sdEl) sdEl.textContent = `System: ${d.systemName} | Date: ${new Date().toLocaleDateString()}`;
+
+    const orEl = document.getElementById('overall-risk');
+    if (orEl) orEl.textContent = d.overallRisk;
+
+    const circle = document.getElementById('risk-circle-progress');
+    if (circle) {
+        const circ = 2 * Math.PI * 140;
+        circle.setAttribute('stroke-dasharray', circ.toFixed(2));
+        circle.setAttribute('stroke-dashoffset', (circ - (d.overallRisk / 100) * circ).toFixed(2));
+    }
+
+    // mini circles
+    const layers = [
+        { label:'🗄️ Data Layer',       score:d.dataScore,       color:'#10b981' },
+        { label:'🤖 AI System Layer',   score:d.modelScore,      color:'#3b82f6' },
+        { label:'⚙️ Application Layer', score:d.appScore,        color:'#f59e0b' },
+        { label:'🌐 Infrastructure',    score:d.infraScore,      color:'#a855f7' },
+        { label:'📋 Compliance',        score:d.complianceScore, color:'#ef4444' }
+    ];
+    const r = 44, mc = 2 * Math.PI * r;
+    const lbEl = document.getElementById('layer-breakdown');
+    if (lbEl) {
+        lbEl.innerHTML = layers.map(l => {
+            const s = Math.round(l.score);
+            const off = (mc - (s / 100) * mc).toFixed(2);
+            return `<div class="risk-item">
+                <div class="mini-circle-wrap">
+                    <svg class="mini-circle-svg" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="${r}" fill="none" stroke="rgba(71,85,105,0.25)" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="${r}" fill="none" stroke="${l.color}" stroke-width="6"
+                            stroke-dasharray="${mc.toFixed(2)}" stroke-dashoffset="${off}"
+                            stroke-linecap="round"
+                            style="transform:rotate(-90deg);transform-origin:50px 50px;transition:stroke-dashoffset 1.2s ease-in-out"/>
+                    </svg>
+                    <div class="mini-circle-text"><div class="mini-circle-score">${s}</div></div>
+                </div>
+                <div class="risk-item-layer">${l.label}</div>
+            </div>`;
+        }).join('');
+    }
+
+    // recommendations
+    const recs = [];
+    if (d.dataSens === 'confidential') recs.push('<div class="recommendation-item"><strong>🔐 Data Layer:</strong> Implement end-to-end encryption and differential privacy for PII data. Apply field-level masking before model ingestion.</div>');
+    if (d.autonomy === 'agentic')      recs.push('<div class="recommendation-item"><strong>🤖 AI System:</strong> Deploy human-in-the-loop approval gates for autonomous actions. Implement comprehensive agent audit logging.</div>');
+    if (['4-7','8plus'].includes(d.integrations)) recs.push('<div class="recommendation-item"><strong>🔌 Infrastructure:</strong> Conduct security assessments of all third-party integrations. Enforce API rate limiting and zero-trust access.</div>');
+    if (d.fineTuning === 'yes')        recs.push('<div class="recommendation-item"><strong>🎯 AI System:</strong> Sanitize fine-tuning data against prompt injection. Maintain signed model artifact version control.</div>');
+    if (d.users === 'public')          recs.push('<div class="recommendation-item"><strong>👥 Application:</strong> Implement DDoS protection, rate limiting, and input validation for public-facing AI endpoints.</div>');
+    if (d.modelHosting === 'managed-cloud') recs.push('<div class="recommendation-item"><strong>🌐 Infrastructure:</strong> Enable cloud-native security controls: VPC isolation, IAM least-privilege, and encryption key management.</div>');
+    if (recs.length === 0) recs.push('<div class="recommendation-item"><strong>✅ Status:</strong> Low risk profile detected. Continue monitoring and maintain regular vulnerability assessments.</div>');
+    const rlEl = document.getElementById('recommendations-list');
+    if (rlEl) rlEl.innerHTML = recs.join('');
+}
+
+// ══ CONTROLS PAGE ══
+const controlsData = [
+    { id:'data', label:'🗄️ Data Layer', color:'#10b981', bg:'rgba(16,185,129,0.12)',
+      threats:[
+        { t:'Data Poisoning — malicious data injected into training/inference pipelines', controls:[
+            { text:'Input validation & sanitization', desc:'Validate all data inputs before ingestion', impact:10 },
+            { text:'Data provenance tracking', desc:'Track origin and lineage of all training data', impact:8 }]},
+        { t:'PII/Sensitive Data Leakage — model memorizes and exposes private data', controls:[
+            { text:'Differential privacy techniques', desc:'Add noise to training to prevent memorization', impact:12 },
+            { text:'Data masking & tokenization', desc:'Mask PII before it reaches the model', impact:10 }]}
+      ]},
+    { id:'model', label:'🤖 AI System Layer', color:'#3b82f6', bg:'rgba(59,130,246,0.12)',
+      threats:[
+        { t:'Prompt Injection — adversarial inputs hijack model behavior', controls:[
+            { text:'Prompt filtering & guardrails', desc:'Detect and block injection patterns', impact:15 },
+            { text:'System prompt isolation', desc:'Separate system and user prompt contexts', impact:8 }]},
+        { t:'Model Inversion — attackers reconstruct training data from outputs', controls:[
+            { text:'Output filtering', desc:'Block outputs that resemble training data', impact:10 },
+            { text:'Rate limiting on inference', desc:'Limit query rate to prevent extraction', impact:7 }]}
+      ]},
+    { id:'app', label:'⚙️ Application Layer', color:'#f59e0b', bg:'rgba(245,158,11,0.12)',
+      threats:[
+        { t:'Insecure Plugin/Tool Use — agentic actions cause unintended harm', controls:[
+            { text:'Least-privilege tool access', desc:'Grant agents only minimum required permissions', impact:15 },
+            { text:'Human-in-the-loop approvals', desc:'Require human sign-off for high-risk actions', impact:12 }]},
+        { t:'Prompt Injection via User Input — malicious prompts hijack agent behavior', controls:[
+            { text:'Content filtering for prompt injections', desc:'Detect & block prompt injection patterns before model sees input', impact:18 },
+            { text:'Input/output escaping & validation', desc:'Sanitize all user inputs and model outputs at API boundary', impact:10 }]},
+        { t:'Excessive Agency — agent performs unintended autonomous actions', controls:[
+            { text:'Action audit logging', desc:'Log all agent actions for review and forensics', impact:8 },
+            { text:'Scope limiting & sandboxing', desc:'Restrict agent to defined operational scope only', impact:10 }]}
+      ]},
+    { id:'infra', label:'🌐 Infrastructure', color:'#a855f7', bg:'rgba(168,85,247,0.12)',
+      threats:[
+        { t:'API Key Exposure — credentials leaked via logs or repositories', controls:[
+            { text:'Secrets management (Vault/KMS)', desc:'Store credentials in dedicated secrets manager', impact:12 },
+            { text:'API key rotation policy', desc:'Rotate keys on a scheduled basis', impact:8 }]},
+        { t:'Supply Chain Attacks — compromised model weights or dependencies', controls:[
+            { text:'Model integrity verification', desc:'Verify checksums of model artifacts', impact:10 },
+            { text:'Dependency scanning (SCA)', desc:'Scan all packages for known vulnerabilities', impact:8 }]}
+      ]},
+    { id:'compliance', label:'📋 Compliance', color:'#ef4444', bg:'rgba(239,68,68,0.12)',
+      threats:[
+        { t:'Regulatory Non-compliance — GDPR, HIPAA, AI Act violations', controls:[
+            { text:'AI impact assessment (DPIA)', desc:'Conduct data protection impact assessment before deployment', impact:12 },
+            { text:'Compliance monitoring dashboard', desc:'Continuously track regulatory obligations and control status', impact:8 }]},
+        { t:'Excessive Data Retention — data kept beyond need increases breach exposure', controls:[
+            { text:'Data minimization policy', desc:'Collect and process only data strictly necessary for the task', impact:10 },
+            { text:'Data retention & deletion policy', desc:'Define max retention periods and automate scheduled deletion', impact:12 }]},
+        { t:'Model Training on User Data — supplier uses prompts or outputs to train models', controls:[
+            { text:'Model will not train on data (contractual)', desc:'Require contractual guarantee that prompts and outputs are excluded from training', impact:15 },
+            { text:'Zero data retention on supplier end', desc:'Enforce zero retention clauses — supplier deletes data immediately post-inference', impact:15 }]},
+        { t:'Lack of AI Explainability — inability to audit or justify model decisions', controls:[
+            { text:'Explainability tooling (XAI)', desc:'Implement SHAP/LIME for auditable decision explanations', impact:8 },
+            { text:'Decision audit trails', desc:'Maintain immutable logs of all high-stakes AI decisions', impact:7 }]}
+      ]}
+];
+
+const appliedControls = {};
+
+// ── Derive suggested controls from assessment data ──
+function getSuggestedKeys() {
+    const d = window.assessmentData;
+    if (!d) return new Set();
+    const suggested = new Set();
+    // Data layer suggestions
+    if (d.dataSens === 'confidential' || d.dataSens === 'confidential') {
+        suggested.add('data-0-0'); suggested.add('data-0-1');
+        suggested.add('data-1-0'); suggested.add('data-1-1');
+    }
+    // AI System layer
+    if (d.modelHosting === 'vendor-api' || d.modelHosting === 'managed-cloud') {
+        suggested.add('model-0-0'); suggested.add('model-0-1');
+    }
+    if (d.fineTuning === 'yes') {
+        suggested.add('model-1-0'); suggested.add('model-1-1');
+    }
+    // App layer
+    if (d.autonomy === 'agentic' || d.autonomy === 'supervised') {
+        suggested.add('app-0-0'); suggested.add('app-0-1');
+        suggested.add('app-1-0'); suggested.add('app-2-0'); suggested.add('app-2-1');
+    }
+    if (d.users === 'public') {
+        suggested.add('app-1-0'); suggested.add('app-1-1');
+    }
+    // Infra layer
+    if (d.integrations !== 'none') {
+        suggested.add('infra-0-0'); suggested.add('infra-0-1');
+        suggested.add('infra-1-1');
+    }
+    if (['4-7','8plus'].includes(d.integrations)) {
+        suggested.add('infra-1-0'); suggested.add('infra-1-1');
+    }
+    // Compliance layer — always suggest core privacy controls
+    suggested.add('compliance-0-0');
+    suggested.add('compliance-1-0'); suggested.add('compliance-1-1');
+    suggested.add('compliance-2-0'); suggested.add('compliance-2-1');
+    return suggested;
+}
+
+function getPriority(impact) {
+    if (impact >= 15) return { label:'High Priority', cls:'priority-high' };
+    if (impact >= 10) return { label:'Medium', cls:'priority-med' };
+    return { label:'Low', cls:'priority-low' };
+}
+
+function renderControlsPage() {
+    const orig = window.assessmentData ? window.assessmentData.overallRisk : 0;
+    const origEl = document.getElementById('ctrl-original-score');
+    if (origEl) origEl.textContent = orig;
+
+    const suggested = getSuggestedKeys();
+
+    // Build suggestion banner
+    const suggestNames = [];
+    controlsData.forEach(layer => {
+        layer.threats.forEach((t, ti) => {
+            t.controls.forEach((c, ci) => {
+                const key = layer.id + '-' + ti + '-' + ci;
+                if (suggested.has(key)) suggestNames.push({ key, text: c.text, layer: layer.label });
             });
+        });
+    });
 
-            const getStatusColor = (status) => {
-                switch (status) {
-                    case 'pending': return 'bg-yellow-500';
-                    case 'in-progress': return 'bg-blue-500';
-                    case 'completed': return 'bg-green-500';
-                    case 'rejected': return 'bg-red-500';
-                    default: return 'bg-gray-500';
-                }
-            };
+    const container = document.getElementById('controls-layers-container');
+    if (!container) return;
 
-            const getPriorityColor = (priority) => {
-                switch (priority) {
-                    case 'high': return 'text-red-600 bg-red-50';
-                    case 'medium': return 'text-yellow-600 bg-yellow-50';
-                    case 'low': return 'text-green-600 bg-green-50';
-                    default: return 'text-gray-600 bg-gray-50';
-                }
-            };
-
-            const handleSubmitRequest = (e) => {
-                e.preventDefault();
-                const request = {
-                    id: `REQ-${String(requests.length + 1).padStart(3, '0')}`,
-                    ...newRequest,
-                    status: 'pending',
-                    submittedBy: 'Current User',
-                    submittedAt: new Date(),
-                    lastUpdated: new Date(),
-                    assignee: 'Auto-assigned'
-                };
-                setRequests([...requests, request]);
-                setNewRequest({ title: '', type: 'Security Assessment', priority: 'medium', description: '' });
-                setShowNewRequestForm(false);
-            };
-
-            const ProgressRing = ({ progress }) => {
-                const radius = 20;
-                const circumference = 2 * Math.PI * radius;
-                const strokeDashoffset = circumference - (progress / 100) * circumference;
-
-                return (
-                    <div className="relative w-12 h-12">
-                        <svg className="progress-ring w-12 h-12" width="48" height="48">
-                            <circle
-                                cx="24" cy="24" r={radius}
-                                stroke="rgba(255,255,255,0.2)"
-                                strokeWidth="3"
-                                fill="transparent"
-                            />
-                            <circle
-                                cx="24" cy="24" r={radius}
-                                stroke="white"
-                                strokeWidth="3"
-                                fill="transparent"
-                                strokeDasharray={circumference}
-                                strokeDashoffset={strokeDashoffset}
-                            />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-xs font-semibold text-white">{progress}%</span>
-                        </div>
-                    </div>
-                );
-            };
-
-            return (
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-3xl font-bold text-white mb-2">Request Status</h2>
-                            <p className="text-white/80">Track and manage security assessment requests</p>
-                        </div>
-                        <button
-                            onClick={() => setShowNewRequestForm(true)}
-                            className="glass text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-white/30 transition-all duration-300 glow"
-                        >
-                            <Plus className="w-5 h-5" />
-                            New Request
-                        </button>
-                    </div>
-
-                    {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                        {[
-                            { label: 'Total Requests', value: requests.length, color: 'gradient-primary', icon: FileText },
-                            { label: 'Pending', value: requests.filter(r => r.status === 'pending').length, color: 'gradient-warning', icon: Clock },
-                            { label: 'In Progress', value: requests.filter(r => r.status === 'in-progress').length, color: 'gradient-success', icon: TrendingUp },
-                            { label: 'Completed', value: requests.filter(r => r.status === 'completed').length, color: 'gradient-success', icon: CheckCircle }
-                        ].map((stat, index) => {
-                            const Icon = stat.icon;
-                            return (
-                                <div key={index} className={`glass p-6 rounded-2xl text-white slide-in`} style={{animationDelay: `${index * 0.1}s`}}>
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-white/80 text-sm font-medium">{stat.label}</p>
-                                            <p className="text-3xl font-bold mt-2">{stat.value}</p>
-                                        </div>
-                                        <div className={`w-14 h-14 ${stat.color} rounded-xl flex items-center justify-center floating`}>
-                                            <Icon className="w-7 h-7" />
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Requests List */}
-                    <div className="glass rounded-2xl p-6">
-                        <h3 className="text-xl font-bold text-white mb-6">Active Requests</h3>
-                        <div className="space-y-4">
-                            {requests.map((request) => (
-                                <div key={request.id} className="glass p-5 rounded-xl hover:bg-white/30 transition-all duration-300 cursor-pointer"
-                                     onClick={() => setSelectedRequest(request)}>
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-2">
-                                                <span className="mono text-sm text-white/80 font-semibold">{request.id}</span>
-                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(request.priority)}`}>
-                                                    {request.priority.toUpperCase()}
-                                                </span>
-                                                <div className="flex items-center gap-2">
-                                                    <div className={`w-3 h-3 rounded-full ${getStatusColor(request.status)}`}></div>
-                                                    <span className="text-white/80 text-sm capitalize">{request.status.replace('-', ' ')}</span>
-                                                </div>
-                                            </div>
-                                            <h4 className="text-white font-semibold text-lg mb-1">{request.title}</h4>
-                                            <p className="text-white/70 text-sm mb-2">{request.description}</p>
-                                            <div className="flex items-center gap-4 text-xs text-white/60">
-                                                <span>Submitted by {request.submittedBy}</span>
-                                                <span>•</span>
-                                                <span>{request.submittedAt.toLocaleDateString()}</span>
-                                                <span>•</span>
-                                                <span>Assigned to {request.assignee}</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            {request.status === 'in-progress' && request.progress && (
-                                                <ProgressRing progress={request.progress} />
-                                            )}
-                                            <Eye className="w-5 h-5 text-white/60" />
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* New Request Modal */}
-                    {showNewRequestForm && (
-                        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                            <div className="glass rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                                <h3 className="text-2xl font-bold text-white mb-6">Create New Request</h3>
-                                <form onSubmit={handleSubmitRequest} className="space-y-6">
-                                    <div>
-                                        <label className="block text-white/80 text-sm font-medium mb-2">Request Title</label>
-                                        <input
-                                            type="text"
-                                            value={newRequest.title}
-                                            onChange={(e) => setNewRequest({...newRequest, title: e.target.value})}
-                                            className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:border-white/60"
-                                            placeholder="Enter request title"
-                                            required
-                                        />
-                                    </div>
-                                    
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-white/80 text-sm font-medium mb-2">Request Type</label>
-                                            <select
-                                                value={newRequest.type}
-                                                onChange={(e) => setNewRequest({...newRequest, type: e.target.value})}
-                                                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white focus:outline-none focus:border-white/60"
-                                            >
-                                                <option value="Security Assessment">Security Assessment</option>
-                                                <option value="Background Check">Background Check</option>
-                                                <option value="Domain Scan">Domain Scan</option>
-                                                <option value="Vulnerability Scan">Vulnerability Scan</option>
-                                                <option value="Compliance Review">Compliance Review</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div>
-                                            <label className="block text-white/80 text-sm font-medium mb-2">Priority</label>
-                                            <select
-                                                value={newRequest.priority}
-                                                onChange={(e) => setNewRequest({...newRequest, priority: e.target.value})}
-                                                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white focus:outline-none focus:border-white/60"
-                                            >
-                                                <option value="low">Low</option>
-                                                <option value="medium">Medium</option>
-                                                <option value="high">High</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-white/80 text-sm font-medium mb-2">Description</label>
-                                        <textarea
-                                            value={newRequest.description}
-                                            onChange={(e) => setNewRequest({...newRequest, description: e.target.value})}
-                                            className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:border-white/60 h-32 resize-none"
-                                            placeholder="Detailed description of the security assessment request"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="flex gap-4 pt-4">
-                                        <button
-                                            type="submit"
-                                            className="flex-1 gradient-primary text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
-                                        >
-                                            Submit Request
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowNewRequestForm(false)}
-                                            className="px-6 py-3 border border-white/30 text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Request Details Modal */}
-                    {selectedRequest && (
-                        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                            <div className="glass rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">{selectedRequest.title}</h3>
-                                        <p className="text-white/80 mono">{selectedRequest.id}</p>
-                                    </div>
-                                    <button
-                                        onClick={() => setSelectedRequest(null)}
-                                        className="text-white/60 hover:text-white"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                    <div className="space-y-6">
-                                        <div>
-                                            <h4 className="text-white font-semibold mb-3">Request Details</h4>
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between">
-                                                    <span className="text-white/70">Type:</span>
-                                                    <span className="text-white">{selectedRequest.type}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-white/70">Status:</span>
-                                                    <div className="flex items-center gap-2">
-                                                        <div className={`w-2 h-2 rounded-full ${getStatusColor(selectedRequest.status)}`}></div>
-                                                        <span className="text-white capitalize">{selectedRequest.status.replace('-', ' ')}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-white/70">Priority:</span>
-                                                    <span className={`px-2 py-1 rounded text-xs ${getPriorityColor(selectedRequest.priority)}`}>
-                                                        {selectedRequest.priority.toUpperCase()}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-white/70">Submitted by:</span>
-                                                    <span className="text-white">{selectedRequest.submittedBy}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-white/70">Assigned to:</span>
-                                                    <span className="text-white">{selectedRequest.assignee}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <h4 className="text-white font-semibold mb-3">Description</h4>
-                                            <p className="text-white/80 leading-relaxed">{selectedRequest.description}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-6">
-                                        <div>
-                                            <h4 className="text-white font-semibold mb-3">Timeline</h4>
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between">
-                                                    <span className="text-white/70">Submitted:</span>
-                                                    <span className="text-white mono text-sm">
-                                                        {selectedRequest.submittedAt.toLocaleString()}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-white/70">Last Updated:</span>
-                                                    <span className="text-white mono text-sm">
-                                                        {selectedRequest.lastUpdated.toLocaleString()}
-                                                    </span>
-                                                </div>
-                                                {selectedRequest.estimatedCompletion && (
-                                                    <div className="flex justify-between">
-                                                        <span className="text-white/70">Est. Completion:</span>
-                                                        <span className="text-white mono text-sm">
-                                                            {selectedRequest.estimatedCompletion.toLocaleString()}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {selectedRequest.status === 'in-progress' && selectedRequest.progress && (
-                                            <div>
-                                                <h4 className="text-white font-semibold mb-3">Progress</h4>
-                                                <div className="flex items-center gap-4">
-                                                    <div className="flex-1 bg-white/20 rounded-full h-3">
-                                                        <div 
-                                                            className="gradient-success h-3 rounded-full transition-all duration-500"
-                                                            style={{ width: `${selectedRequest.progress}%` }}
-                                                        ></div>
-                                                    </div>
-                                                    <span className="text-white font-semibold">{selectedRequest.progress}%</span>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {selectedRequest.results && (
-                                            <div>
-                                                <h4 className="text-white font-semibold mb-3">Results</h4>
-                                                <div className="glass p-4 rounded-xl">
-                                                    <p className="text-white/80">{selectedRequest.results}</p>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {selectedRequest.attachments && (
-                                            <div>
-                                                <h4 className="text-white font-semibold mb-3">Attachments</h4>
-                                                <div className="space-y-2">
-                                                    {selectedRequest.attachments.map((attachment, index) => (
-                                                        <div key={index} className="flex items-center gap-3 glass p-3 rounded-lg">
-                                                            <FileText className="w-4 h-4 text-white/60" />
-                                                            <span className="text-white/80 text-sm">{attachment}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+    // Suggestion banner
+    const bannerHTML = `
+        <div class="suggest-banner">
+            <div class="suggest-banner-icon">💡</div>
+            <div class="suggest-banner-body">
+                <h4>Recommended controls based on your assessment</h4>
+                <p>Based on your system profile, we suggest implementing these ${suggestNames.length} controls. Click any tag to jump to it, or check the box to mark it as planned.</p>
+                <div class="suggest-tags">
+                    ${suggestNames.map(s => `<span class="suggest-tag" onclick="jumpToControl('${s.key}')">${s.text}</span>`).join('')}
                 </div>
-            );
-        };
+            </div>
+        </div>`;
 
-        // Header Component
-        const Header = () => (
-            <header className="glass border-b border-white/20">
-                <div className="px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-3">
-                                <div className="gradient-primary p-2 rounded-xl">
-                                    <Shield className="w-7 h-7 text-white" />
-                                </div>
-                                <h1 className="text-2xl font-bold text-white">SecureAssess Pro</h1>
-                            </div>
-                            <div className="h-6 w-px bg-white/30"></div>
-                            <span className="text-sm text-white/70">Advanced Security Assessment Platform</span>
-                        </div>
-                        
-                        <div className="flex items-center gap-6">
-                            <div className="flex items-center gap-2 text-sm text-white/70">
-                                <Clock className="w-4 h-4" />
-                                <span>Last scan: 2 hours ago</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-3">
-                                <div className="gradient-primary w-8 h-8 rounded-full flex items-center justify-center">
-                                    <User className="w-5 h-5 text-white" />
-                                </div>
-                                <div className="text-sm">
-                                    <div className="font-medium text-white">Asaf - Security Analyst</div>
-                                    <div className="text-white/70">asaf@secureassess.com</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    // Layer sections
+    const layersHTML = controlsData.map(layer => {
+        const layerKeys = [];
+        layer.threats.forEach((t,ti) => t.controls.forEach((_,ci) => layerKeys.push(layer.id+'-'+ti+'-'+ci)));
+        const appliedCount = layerKeys.filter(k => appliedControls[k]).length;
+        const suggestedCount = layerKeys.filter(k => suggested.has(k)).length;
+
+        return `<div class="layer-controls-section">
+            <div class="layer-controls-header" onclick="toggleLayer('${layer.id}')">
+                <div class="layer-header-left">
+                    <span class="layer-badge" style="background:${layer.bg};color:${layer.color}">${layer.label}</span>
+                    <span class="layer-progress-pill">${appliedCount}/${layerKeys.length} applied · ${suggestedCount} recommended</span>
                 </div>
-            </header>
-        );
-
-        // Main App Component
-        const App = () => {
-            const [activeTab, setActiveTab] = useState('request-status');
-            const [assessments, setAssessments] = useState([]);
-
-            const tabs = [
-                { id: 'dashboard', label: 'Dashboard', icon: Shield },
-                { id: 'request-status', label: 'Request Status', icon: Bell },
-                { id: 'agent-chat', label: 'TPRM Agent', icon: Bot },
-                { id: 'upload', label: 'Upload Documents', icon: Upload },
-                { id: 'questionnaire', label: 'Security Assessment', icon: FileText },
-                { id: 'domain-scan', label: 'Domain Scanner', icon: Search },
-                { id: 'background-check', label: 'Background Check', icon: Users },
-                { id: 'report', label: 'Security Report', icon: AlertTriangle },
-            ];
-
-            const renderContent = () => {
-                switch (activeTab) {
-                    case 'request-status':
-                        return <RequestStatus assessments={assessments} setAssessments={setAssessments} />;
-                    case 'dashboard':
-                    default:
-                        return (
-                            <div className="space-y-6">
-                                <div>
-                                    <h2 className="text-3xl font-bold text-white mb-2">Security Dashboard</h2>
-                                    <p className="text-white/80">Monitor and manage security assessments across your organization</p>
+                <span class="layer-chevron" id="chevron-${layer.id}">▼</span>
+            </div>
+            <div class="layer-controls-body" id="body-${layer.id}">
+                ${layer.threats.map((t, ti) => {
+                    const threatControls = t.controls.map((c, ci) => {
+                        const key = layer.id + '-' + ti + '-' + ci;
+                        const isSuggested = suggested.has(key);
+                        const isApplied = appliedControls[key];
+                        const priority = getPriority(c.impact);
+                        return `<div class="control-row ${isApplied?'applied':''} ${isSuggested&&!isApplied?'suggested':''}" id="ctrl-row-${key}" onclick="toggleControl('${key}',${c.impact})">
+                            <div class="control-checkbox ${isApplied?'checked':''}" id="chk-${key}">${isApplied?'✓':''}</div>
+                            <div class="control-text-wrap">
+                                <div class="control-row-top">
+                                    <strong>${c.text}</strong>
+                                    ${isSuggested ? '<span class="control-badge-suggested">★ Recommended</span>' : ''}
                                 </div>
-                                <div className="glass rounded-2xl p-8 text-center">
-                                    <Shield className="w-16 h-16 text-white/60 mx-auto mb-4" />
-                                    <h3 className="text-xl font-semibold text-white mb-2">Welcome to SecureAssess Pro</h3>
-                                    <p className="text-white/70">Start by checking the Request Status or creating a new security assessment.</p>
+                                <span>${c.desc}</span>
+                                <div class="control-meta">
+                                    <div class="control-impact">−${c.impact} pts risk</div>
+                                    <div class="control-priority ${priority.cls}">${priority.label}</div>
                                 </div>
                             </div>
-                        );
-                }
-            };
+                        </div>`;
+                    }).join('');
+                    return `<div class="threat-row"><div class="threat-row-label">⚠️ ${t.t}</div></div>${threatControls}`;
+                }).join('')}
+            </div>
+        </div>`;
+    }).join('');
 
-            return (
-                <div className="min-h-screen">
-                    <Header />
-                    
-                    <div className="flex">
-                        {/* Sidebar Navigation */}
-                        <div className="w-64 glass h-screen sticky top-0 border-r border-white/20">
-                            <div className="p-6">
-                                <div className="flex items-center gap-3 mb-8">
-                                    <div className="gradient-primary p-2 rounded-xl">
-                                        <Shield className="w-6 h-6 text-white" />
-                                    </div>
-                                    <span className="text-xl font-bold text-white">Security Agent</span>
-                                </div>
-                                
-                                <nav className="space-y-2">
-                                    {tabs.map((tab) => {
-                                        const Icon = tab.icon;
-                                        return (
-                                            <button
-                                                key={tab.id}
-                                                onClick={() => setActiveTab(tab.id)}
-                                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-300 nav-item ${
-                                                    activeTab === tab.id
-                                                        ? 'bg-white/20 text-white shadow-lg active glow'
-                                                        : 'text-white/70 hover:bg-white/10 hover:text-white'
-                                                }`}
-                                            >
-                                                <Icon className="w-5 h-5" />
-                                                <span className="font-medium">{tab.label}</span>
-                                            </button>
-                                        );
-                                    })}
-                                </nav>
-                            </div>
-                        </div>
+    container.innerHTML = bannerHTML + layersHTML;
 
-                        {/* Main Content */}
-                        <div className="flex-1 p-6">
-                            {renderContent()}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
+    // Auto-open layers that have suggestions
+    controlsData.forEach(layer => {
+        const layerKeys = [];
+        layer.threats.forEach((t,ti) => t.controls.forEach((_,ci) => layerKeys.push(layer.id+'-'+ti+'-'+ci)));
+        if (layerKeys.some(k => suggested.has(k))) {
+            const body = document.getElementById('body-' + layer.id);
+            const chevron = document.getElementById('chevron-' + layer.id);
+            if (body) body.classList.add('open');
+            if (chevron) chevron.classList.add('open');
+        }
+    });
 
-        // Render the app
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+    updateLiveScore();
+    setTimeout(renderSpiderWebs, 80);
+}
+
+function jumpToControl(key) {
+    const row = document.getElementById('ctrl-row-' + key);
+    if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.style.outline = '2px solid #3b82f6'; setTimeout(() => row.style.outline = '', 2000); }
+}
+
+function toggleLayer(id) {
+    document.getElementById('body-' + id).classList.toggle('open');
+    document.getElementById('chevron-' + id).classList.toggle('open');
+}
+
+function toggleControl(key, impact) {
+    appliedControls[key] = !appliedControls[key];
+    const chk = document.getElementById('chk-' + key);
+    if (chk) { chk.classList.toggle('checked', appliedControls[key]); chk.textContent = appliedControls[key] ? '✓' : ''; }
+    const row = document.getElementById('ctrl-row-' + key);
+    if (row) {
+        row.classList.toggle('applied', appliedControls[key]);
+        if (appliedControls[key]) row.classList.remove('suggested');
+    }
+    // Update layer progress pill
+    const layerId = key.split('-')[0];
+    const layer = controlsData.find(l => l.id === layerId);
+    if (layer) {
+        const layerKeys = [];
+        layer.threats.forEach((t,ti) => t.controls.forEach((_,ci) => layerKeys.push(layer.id+'-'+ti+'-'+ci)));
+        const suggested = getSuggestedKeys();
+        const appliedCount = layerKeys.filter(k => appliedControls[k]).length;
+        const suggestedCount = layerKeys.filter(k => suggested.has(k)).length;
+        const pill = document.querySelector(`#body-${layerId}`)?.closest('.layer-controls-section')?.querySelector('.layer-progress-pill');
+        if (pill) pill.textContent = `${appliedCount}/${layerKeys.length} applied · ${suggestedCount} recommended`;
+    }
+    updateLiveScore();
+}
+
+function updateLiveScore() {
+    const orig = window.assessmentData ? window.assessmentData.overallRisk : 0;
+    const reduction = Object.entries(appliedControls).filter(([,v]) => v).reduce((sum, [key]) => {
+        const parts = key.split('-');
+        const layer = controlsData.find(l => l.id === parts[0]);
+        if (!layer) return sum;
+        return sum + (layer.threats[+parts[1]]?.controls[+parts[2]]?.impact || 0);
+    }, 0);
+    const current = Math.max(0, orig - reduction);
+    const curEl = document.getElementById('ctrl-current-score');
+    if (curEl) curEl.textContent = current;
+    const savedEl = document.getElementById('ctrl-saved-points');
+    if (savedEl) {
+        const pct = orig > 0 ? Math.round((reduction / orig) * 100) : 0;
+        savedEl.textContent = reduction > 0 ? `Risk reduced by ${reduction} pts (${pct}%)` : 'Select controls to reduce score';
+        savedEl.style.color = reduction > 0 ? '#10b981' : '#94a3b8';
+        savedEl.style.background = reduction > 0 ? 'rgba(16,185,129,0.12)' : 'rgba(71,85,105,0.15)';
+    }
+    renderSpiderWebs();
+}
+
+// ══ GUIDELINES TABS ══
+function switchFramework(id) {
+    document.querySelectorAll('.framework-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.framework-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('fw-' + id).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// ══ NAV ══
+// ── Page history ──
+const pageHistory = ['welcome'];
+let historyIdx = 0;
+
+const PAGE_LABELS = {
+    welcome:    '🏠 Home',
+    visualizer: '🔍 Explore Layers',
+    assessment: '📋 Assessment',
+    results:    '📊 Results',
+    controls:   '🛡️ Controls',
+    guidelines: '🔐 Guidelines'
+};
+
+function goToPage(pageId, addToHistory) {
+    if (addToHistory !== false) {
+        // Trim forward history when navigating to new page
+        if (historyIdx < pageHistory.length - 1) {
+            pageHistory.splice(historyIdx + 1);
+        }
+        if (pageHistory[historyIdx] !== pageId) {
+            pageHistory.push(pageId);
+            historyIdx = pageHistory.length - 1;
+        }
+    }
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const pg = document.getElementById(pageId + '-page');
+    if (pg) pg.classList.add('active');
+    window.scrollTo(0, 0);
+    if (pageId === 'visualizer') { selectLayer('data'); }
+    if (pageId === 'controls') renderControlsPage();
+    updateNavArrows();
+}
+
+function navBack() {
+    if (historyIdx > 0) {
+        historyIdx--;
+        goToPage(pageHistory[historyIdx], false);
+    }
+}
+
+function navForward() {
+    if (historyIdx < pageHistory.length - 1) {
+        historyIdx++;
+        goToPage(pageHistory[historyIdx], false);
+    }
+}
+
+function updateNavArrows() {
+    const canBack = historyIdx > 0;
+    const canFwd  = historyIdx < pageHistory.length - 1;
+    const prevLabel = canBack ? PAGE_LABELS[pageHistory[historyIdx - 1]] : '';
+    const nextLabel = canFwd  ? PAGE_LABELS[pageHistory[historyIdx + 1]] : '';
+    const currentId = pageHistory[historyIdx];
+
+    document.querySelectorAll('[id^="btn-back-"]').forEach(btn => {
+        btn.disabled = !canBack;
+        btn.innerHTML = canBack ? `&#8592; ${prevLabel}` : '&#8592; Back';
+    });
+    document.querySelectorAll('[id^="btn-fwd-"]').forEach(btn => {
+        btn.disabled = !canFwd;
+        btn.innerHTML = canFwd ? `${nextLabel} &#8594;` : 'Forward &#8594;';
+    });
+    document.querySelectorAll('[id^="breadcrumb-"]').forEach(el => {
+        el.textContent = canBack ? ` › ${PAGE_LABELS[currentId]}` : '';
+    });
+}
+
+// Init visualizer on load if needed
+renderVisualizerButtons();
+
+// ══ RISK SPIDER WEB — COMBINED BEFORE / AFTER ══
+const SPX = 240, SPY = 240, SPR = 180;
+const SP_AXES = [
+    { angle: -90,  shortLabel: 'DATA',        color: '#10b981' },
+    { angle: -18,  shortLabel: 'AI SYSTEM',   color: '#3b82f6' },
+    { angle:  54,  shortLabel: 'APPLICATION', color: '#f59e0b' },
+    { angle: 126,  shortLabel: 'INFRA',       color: '#a855f7' },
+    { angle: 198,  shortLabel: 'COMPLIANCE',  color: '#ef4444' }
+];
+
+function spPolar(angle, r) {
+    const rad = angle * Math.PI / 180;
+    return { x: SPX + r * Math.cos(rad), y: SPY + r * Math.sin(rad) };
+}
+
+function buildCombinedSpider(svgEl, beforeScores, afterScores) {
+    svgEl.innerHTML = '';
+    const ns = 'http://www.w3.org/2000/svg';
+
+    // Background
+    const bg = document.createElementNS(ns, 'circle');
+    bg.setAttribute('cx', SPX); bg.setAttribute('cy', SPY); bg.setAttribute('r', SPR + 36);
+    bg.setAttribute('fill', 'rgba(15,23,42,0.6)');
+    bg.setAttribute('stroke', 'rgba(71,85,105,0.2)'); bg.setAttribute('stroke-width', '1');
+    svgEl.appendChild(bg);
+
+    // Grid rings (5 levels = 20% each)
+    for (let i = 5; i >= 1; i--) {
+        const r = SPR * i / 5;
+        const pts = SP_AXES.map(a => spPolar(a.angle, r));
+        const poly = document.createElementNS(ns, 'polygon');
+        poly.setAttribute('points', pts.map(p => p.x + ',' + p.y).join(' '));
+        poly.setAttribute('fill', i % 2 === 0 ? 'rgba(30,41,59,0.4)' : 'rgba(15,23,42,0.25)');
+        poly.setAttribute('stroke', 'rgba(71,85,105,0.3)');
+        poly.setAttribute('stroke-width', '0.8');
+        svgEl.appendChild(poly);
+        // % label near top-right spoke
+        const lp = spPolar(-18, r);
+        const lt = document.createElementNS(ns, 'text');
+        lt.setAttribute('x', lp.x + 7); lt.setAttribute('y', lp.y);
+        lt.setAttribute('fill', 'rgba(148,163,184,0.45)');
+        lt.setAttribute('font-size', '9'); lt.setAttribute('dominant-baseline', 'middle');
+        lt.textContent = (i * 20) + '%';
+        svgEl.appendChild(lt);
+    }
+
+    // Axes
+    SP_AXES.forEach(a => {
+        const end = spPolar(a.angle, SPR);
+        const line = document.createElementNS(ns, 'line');
+        line.setAttribute('x1', SPX); line.setAttribute('y1', SPY);
+        line.setAttribute('x2', end.x); line.setAttribute('y2', end.y);
+        line.setAttribute('stroke', 'rgba(71,85,105,0.5)'); line.setAttribute('stroke-width', '1');
+        svgEl.appendChild(line);
+    });
+
+    // ── BEFORE polygon (red, solid fill) ──
+    const bPts = SP_AXES.map((a, i) => spPolar(a.angle, SPR * Math.min(beforeScores[i], 100) / 100));
+    const bPoly = document.createElementNS(ns, 'polygon');
+    bPoly.setAttribute('points', bPts.map(p => p.x + ',' + p.y).join(' '));
+    bPoly.setAttribute('fill', 'rgba(239,68,68,0.22)');
+    bPoly.setAttribute('stroke', '#ef4444');
+    bPoly.setAttribute('stroke-width', '2.5');
+    bPoly.setAttribute('stroke-linejoin', 'round');
+    svgEl.appendChild(bPoly);
+
+    bPts.forEach((p, i) => {
+        // Dot
+        const dot = document.createElementNS(ns, 'circle');
+        dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('r', '6');
+        dot.setAttribute('fill', '#ef4444'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '1.5');
+        svgEl.appendChild(dot);
+        // Score label (outer offset)
+        const off = spPolar(SP_AXES[i].angle, SPR * Math.min(beforeScores[i], 100) / 100 + 18);
+        const t = document.createElementNS(ns, 'text');
+        t.setAttribute('x', off.x); t.setAttribute('y', off.y);
+        t.setAttribute('text-anchor', 'middle'); t.setAttribute('dominant-baseline', 'middle');
+        t.setAttribute('fill', '#fca5a5'); t.setAttribute('font-size', '12'); t.setAttribute('font-weight', '700');
+        t.textContent = Math.round(beforeScores[i]);
+        svgEl.appendChild(t);
+    });
+
+    // ── AFTER polygon (green, dashed) ──
+    if (afterScores) {
+        const aPts = SP_AXES.map((a, i) => spPolar(a.angle, SPR * Math.min(afterScores[i], 100) / 100));
+        const aPoly = document.createElementNS(ns, 'polygon');
+        aPoly.setAttribute('points', aPts.map(p => p.x + ',' + p.y).join(' '));
+        aPoly.setAttribute('fill', 'rgba(16,185,129,0.18)');
+        aPoly.setAttribute('stroke', '#10b981');
+        aPoly.setAttribute('stroke-width', '2.5');
+        aPoly.setAttribute('stroke-dasharray', '8 4');
+        aPoly.setAttribute('stroke-linejoin', 'round');
+        svgEl.appendChild(aPoly);
+
+        aPts.forEach((p, i) => {
+            // Dot
+            const dot = document.createElementNS(ns, 'circle');
+            dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('r', '6');
+            dot.setAttribute('fill', '#10b981'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '1.5');
+            svgEl.appendChild(dot);
+            // Score label (inner offset)
+            const diff = Math.abs(beforeScores[i] - afterScores[i]);
+            if (diff > 0) {
+                const off = spPolar(SP_AXES[i].angle, SPR * Math.min(afterScores[i], 100) / 100 - 18);
+                const t = document.createElementNS(ns, 'text');
+                t.setAttribute('x', off.x); t.setAttribute('y', off.y);
+                t.setAttribute('text-anchor', 'middle'); t.setAttribute('dominant-baseline', 'middle');
+                t.setAttribute('fill', '#6ee7b7'); t.setAttribute('font-size', '12'); t.setAttribute('font-weight', '700');
+                t.textContent = Math.round(afterScores[i]);
+                svgEl.appendChild(t);
+            }
+        });
+    }
+
+    // Axis labels with colored pill backgrounds
+    SP_AXES.forEach(a => {
+        const lpos = spPolar(a.angle, SPR + 28);
+        const labelW = a.shortLabel.length * 6.5 + 14;
+        const pill = document.createElementNS(ns, 'rect');
+        pill.setAttribute('x', lpos.x - labelW/2); pill.setAttribute('y', lpos.y - 10);
+        pill.setAttribute('width', labelW); pill.setAttribute('height', 20);
+        pill.setAttribute('rx', '10');
+        pill.setAttribute('fill', a.color + '22'); pill.setAttribute('stroke', a.color + '66'); pill.setAttribute('stroke-width', '1');
+        svgEl.appendChild(pill);
+        const txt = document.createElementNS(ns, 'text');
+        txt.setAttribute('x', lpos.x); txt.setAttribute('y', lpos.y);
+        txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('dominant-baseline', 'middle');
+        txt.setAttribute('fill', a.color); txt.setAttribute('font-size', '9'); txt.setAttribute('font-weight', '800');
+        txt.setAttribute('letter-spacing', '0.06em');
+        txt.textContent = a.shortLabel;
+        svgEl.appendChild(txt);
+    });
+
+    // Center
+    const center = document.createElementNS(ns, 'circle');
+    center.setAttribute('cx', SPX); center.setAttribute('cy', SPY); center.setAttribute('r', '7');
+    center.setAttribute('fill', '#10b981'); center.setAttribute('stroke', '#fff'); center.setAttribute('stroke-width', '2');
+    svgEl.appendChild(center);
+}
+
+function renderSpiderWebs() {
+    const d = window.assessmentData;
+    if (!d) return;
+    const beforeScores = [d.dataScore, d.modelScore, d.appScore, d.infraScore, d.complianceScore];
+    const reduction = { data: 0, model: 0, app: 0, infra: 0, compliance: 0 };
+    const appliedControlsList = Object.entries(appliedControls).filter(([, v]) => v);
+    
+    appliedControlsList.forEach(([key]) => {
+        const parts = key.split('-');
+        const layer = controlsData.find(l => l.id === parts[0]);
+        if (!layer) return;
+        reduction[parts[0]] = (reduction[parts[0]] || 0) + (layer.threats[+parts[1]]?.controls[+parts[2]]?.impact || 0);
+    });
+    
+    const afterScores = [
+        Math.max(0, d.dataScore       - reduction.data),
+        Math.max(0, d.modelScore      - reduction.model),
+        Math.max(0, d.appScore        - reduction.app),
+        Math.max(0, d.infraScore      - reduction.infra),
+        Math.max(0, d.complianceScore - reduction.compliance)
+    ];
+    
+    const svg = document.getElementById('spider-combined');
+    if (svg) buildCombinedSpider(svg, beforeScores, afterScores);
+    
+    // Update live risk reduction stats
+    updateRiskReductionStats(beforeScores, afterScores, appliedControlsList.length);
+}
+
+function updateRiskReductionStats(beforeScores, afterScores, controlsApplied) {
+    // Calculate average risk reduction
+    const reductions = beforeScores.map((before, i) => {
+        const after = afterScores[i];
+        const percentReduction = before > 0 ? ((before - after) / before * 100) : 0;
+        return Math.max(0, percentReduction);
+    });
+    
+    const avgReduction = reductions.length > 0 ? reductions.reduce((a, b) => a + b) / reductions.length : 0;
+    
+    // Calculate baseline scores (average)
+    const baselineBefore = beforeScores.reduce((a, b) => a + b) / beforeScores.length;
+    const baselineAfter = afterScores.reduce((a, b) => a + b) / afterScores.length;
+    
+    // Count total available controls
+    const totalControls = controlsData.reduce((sum, layer) => {
+        return sum + layer.threats.reduce((threatSum, threat) => {
+            return threatSum + (threat.controls ? threat.controls.length : 0);
+        }, 0);
+    }, 0);
+    
+    // Update DOM elements with animation
+    const avgReductionEl = document.getElementById('avg-reduction');
+    const avgDetailEl = document.getElementById('avg-detail');
+    const controlsCountEl = document.getElementById('controls-count');
+    const riskBeforeEl = document.getElementById('risk-before');
+    const riskAfterEl = document.getElementById('risk-after');
+    
+    if (avgReductionEl) {
+        avgReductionEl.textContent = Math.round(avgReduction) + '%';
+        avgReductionEl.style.animation = 'statPulse 0.6s ease';
+    }
+    
+    if (avgDetailEl) {
+        const msg = controlsApplied === 0 ? 'No controls selected' : 
+                    controlsApplied === 1 ? '1 control applied' : 
+                    `${controlsApplied} controls applied`;
+        avgDetailEl.textContent = msg;
+    }
+    
+    if (controlsCountEl) {
+        controlsCountEl.textContent = controlsApplied;
+        controlsCountEl.style.animation = 'statPulse 0.6s ease';
+    }
+    
+    if (riskBeforeEl) riskBeforeEl.textContent = Math.round(baselineBefore);
+    if (riskAfterEl) riskAfterEl.textContent = Math.round(baselineAfter);
+}
+</script>
 </body>
 </html>
