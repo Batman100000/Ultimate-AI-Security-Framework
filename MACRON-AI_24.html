@@ -1094,66 +1094,7 @@ function toggleControl(key, impact) {
     updateLiveScore();
 }
 
-// ════════════════════════════════════════════════════════════════════════════════
-// ═══ CONFETTI EFFECT ═══
-// ════════════════════════════════════════════════════════════════════════════════
-function triggerConfetti() {
-    const canvas = document.createElement('canvas');
-    canvas.id = 'confetti-canvas';
-    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
-    document.body.appendChild(canvas);
-    
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const confetti = [];
-    const colors = ['#10b981', '#cfbcff', '#3b82f6', '#f59e0b', '#ef4444'];
-    
-    // Create confetti pieces
-    for (let i = 0; i < 100; i++) {
-        confetti.push({
-            x: Math.random() * canvas.width,
-            y: -10,
-            vx: (Math.random() - 0.5) * 8,
-            vy: Math.random() * 8 + 4,
-            size: Math.random() * 8 + 4,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: Math.random() * Math.PI * 2,
-            rotationVel: (Math.random() - 0.5) * 0.3
-        });
-    }
-    
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        let active = false;
-        confetti.forEach((p, i) => {
-            p.y += p.vy;
-            p.x += p.vx;
-            p.vy += 0.15; // gravity
-            p.vx *= 0.99; // air resistance
-            p.rotation += p.rotationVel;
-            
-            if (p.y < canvas.height) {
-                active = true;
-                ctx.save();
-                ctx.translate(p.x, p.y);
-                ctx.rotate(p.rotation);
-                ctx.fillStyle = p.color;
-                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-                ctx.restore();
-            }
-        });
-        
-        if (active) requestAnimationFrame(animate);
-        else { canvas.remove(); }
-    }
-    
-    animate();
-}
-
-// Mark all controls with confetti effect
+// Mark all controls
 function markAllControls() {
     controlsData.forEach(layer => {
         layer.threats.forEach((threat, ti) => {
@@ -1173,8 +1114,6 @@ function markAllControls() {
         if (pill) pill.textContent = `${layerKeys.length}/${layerKeys.length} applied · 0 recommended`;
     });
     updateLiveScore();
-    // Trigger confetti celebration
-    triggerConfetti();
 }
 
 // Clear all controls
